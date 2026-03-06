@@ -1,0 +1,29 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.7.34221.43
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WebAPI_OTK", "WebAPI_OTK\WebAPI_OTK.csproj", "{724186E4-4718-4F35-9EDA-FDF004C7A2F4}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Новая папка1", "Новая папка1", "{E008C196-0EC9-416A-94DE-A5E209F549B3}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Новая папка2", "Новая папка2", "{AEBC8AB0-9F23-4ACC-911E-C128C5AB8D02}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{724186E4-4718-4F35-9EDA-FDF004C7A2F4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{724186E4-4718-4F35-9EDA-FDF004C7A2F4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{724186E4-4718-4F35-9EDA-FDF004C7A2F4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{724186E4-4718-4F35-9EDA-FDF004C7A2F4}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {9A20125B-5312-4C99-B631-974631EEC474}
+	EndGlobalSection
+EndGlobal

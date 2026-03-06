@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Тест API</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 20px;
+            background: #2F3E46;
+            color: #fff;
+        }
+        .test-section {
+            background: #3a4a52;
+            padding: 15px;
+            margin: 10px 0;
+            border-radius: 8px;
+        }
+        button {
+            background: #FFFD82;
+            color: #0A0903;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 4px;
+            cursor: pointer;
+            margin: 5px;
+        }
+        button:hover {
+            opacity: 0.8;
+        }
+        pre {
+            background: #0A0903;
+            padding: 10px;
+            border-radius: 4px;
+            overflow-x: auto;
+        }
+        .error {
+            color: #F44336;
+        }
+        .success {
+            color: #4CAF50;
+        }
+    </style>
+</head>
+<body>
+    <h1>Тест API Endpoints</h1>
+    
+    <div class="test-section">
+        <h2>Тест: GET /api/Employee</h2>
+        <button onclick="testEmployees()">Тест сотрудников</button>
+        <pre id="employeesResult">Нажмите кнопку для теста</pre>
+    </div>
+    
+    <div class="test-section">
+        <h2>Тест: GET /api/Product</h2>
+        <button onclick="testProducts()">Тест изделий</button>
+        <pre id="productsResult">Нажмите кнопку для теста</pre>
+    </div>
+    
+    <div class="test-section">
+        <h2>Тест: GET /api/RouteList/opened</h2>
+        <button onclick="testRouteList()">Тест МЛ</button>
+        <pre id="routeListResult">Нажмите кнопку для теста</pre>
+    </div>
+    
+    <div class="test-section">
+        <h2>Тест: GET /api/OperationType</h2>
+        <button onclick="testOperationTypes()">Тест типов операций</button>
+        <pre id="operationTypesResult">Нажмите кнопку для теста</pre>
+    </div>
+
+    <script>
+        const API_BASE = window.location.origin + '/api';
+        
+        async function testAPI(endpoint, resultId) {
+            const resultEl = document.getElementById(resultId);
+            resultEl.textContent = 'Загрузка...';
+            
+            try {
+                const response = await fetch(`${API_BASE}${endpoint}`);
+                const status = response.status;
+                
+                if (!response.ok) {
+                    const errorText = await response.text();
+                    resultEl.className = 'error';
+                    resultEl.textContent = `Ошибка ${status}:\n${errorText}`;
+                    return;
+                }
+                
+                const data = await response.json();
+                resultEl.className = 'success';
+                resultEl.textContent = `Успех! Получено записей: ${Array.isArray(data) ? data.length : 1}\n\n${JSON.stringify(data, null, 2)}`;
+            } catch (error) {
+                resultEl.className = 'error';
+                resultEl.textContent = `Ошибка: ${error.message}\n${error.stack}`;
+            }
+        }
+        
+        function testEmployees() {
+            testAPI('/Employee', 'employeesResult');
+        }
+        
+        function testProducts() {
+            testAPI('/Product', 'productsResult');
+        }
+        
+        function testRouteList() {
+            testAPI('/RouteList/opened', 'routeListResult');
+        }
+        
+        function testOperationTypes() {
+            testAPI('/OperationType', 'operationTypesResult');
+        }
+    </script>
+</body>
+</html>

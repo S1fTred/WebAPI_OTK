@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Премиальные коэффициенты - Система ОТК</title>
+    <link rel="stylesheet" href="/css/main.css">
+    <link rel="stylesheet" href="/css/components.css">
+    <link rel="stylesheet" href="/css/pages.css">
+</head>
+<body>
+    <div class="app-container">
+        <!-- Шапка -->
+        <header class="header">
+            <div class="header-content">
+                <h1 class="logo">Система ОТК</h1>
+                <nav class="nav">
+                    <a href="/index.html" class="nav-link">Главная</a>
+                    <a href="/pages/ml-closure.html" class="nav-link">Закрытие МЛ</a>
+                    <a href="/pages/prem-koef.html" class="nav-link active">Премиальные коэффициенты</a>
+                    <a href="/pages/dce-catalog.html" class="nav-link">Каталог ДСЕ</a>
+                </nav>
+            </div>
+        </header>
+
+        <!-- Основной контент -->
+        <main class="main-content">
+            <div class="page-header">
+                <h2>Премиальные коэффициенты</h2>
+            </div>
+
+            <!-- Статистика -->
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-value" id="totalKoefCount">0</div>
+                    <div class="stat-label">Всего коэффициентов</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value" id="activeKoefCount">0</div>
+                    <div class="stat-label">Активных</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value" id="inactiveKoefCount">0</div>
+                    <div class="stat-label">Неактивных</div>
+                </div>
+            </div>
+
+            <!-- Панель управления -->
+            <div class="search-bar">
+                <div class="section-header" style="margin-bottom: var(--spacing-md);">
+                    <h3>Фильтры и поиск</h3>
+                    <button id="addKoefBtn" class="btn btn-primary">+ Добавить коэффициент</button>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="searchInput">Поиск по наименованию</label>
+                        <input type="text" id="searchInput" placeholder="Введите название...">
+                    </div>
+                    <div class="form-group">
+                        <label for="statusFilter">Статус</label>
+                        <select id="statusFilter">
+                            <option value="all">Все</option>
+                            <option value="active" selected>Только активные</option>
+                            <option value="inactive">Только неактивные</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="productFilter">Изделие</label>
+                        <select id="productFilter">
+                            <option value="">Все изделия</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="operationTypeFilter">Тип операции</label>
+                        <select id="operationTypeFilter">
+                            <option value="">Все типы</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="dateFilter">Дата проверки</label>
+                        <input type="date" id="dateFilter">
+                    </div>
+                    <div class="form-group">
+                        <label>&nbsp;</label>
+                        <button id="resetFiltersBtn" class="btn btn-secondary btn-block">Сбросить фильтры</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Список коэффициентов -->
+            <div id="koefListContainer">
+                <!-- Карточки коэффициентов будут здесь -->
+            </div>
+        </main>
+    </div>
+
+    <!-- Модальное окно создания/редактирования коэффициента -->
+    <div id="koefModal" class="modal">
+        <div class="modal-content">
+            <span class="modal-close">&times;</span>
+            <h2 id="modalTitle">Добавить коэффициент</h2>
+            <form id="koefForm">
+                <input type="hidden" id="koefId" name="koefId">
+                
+                <div class="form-group">
+                    <label for="koefName">Наименование *</label>
+                    <input type="text" id="koefName" name="koefName" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="koefValue">Коэффициент *</label>
+                    <input type="number" id="koefValue" name="koefValue" step="0.01" min="0.01" required>
+                    <small style="color: var(--color-neutral);">Например: 1.5 означает +50% к базовой ставке</small>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="koefStartDate">Дата начала *</label>
+                        <input type="date" id="koefStartDate" name="koefStartDate" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="koefEndDate">Дата окончания</label>
+                        <input type="date" id="koefEndDate" name="koefEndDate">
+                        <small style="color: var(--color-neutral);">Оставьте пустым для бессрочного</small>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="koefProduct">Изделие</label>
+                    <select id="koefProduct" name="koefProduct">
+                        <option value="">Не указано (для всех)</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="koefDce">ДСЕ</label>
+                    <select id="koefDce" name="koefDce">
+                        <option value="">Не указано (для всех)</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="koefOperationType">Тип операции</label>
+                    <select id="koefOperationType" name="koefOperationType">
+                        <option value="">Не указано (для всех)</option>
+                    </select>
+                </div>
+
+                <div class="form-actions">
+                    <button type="button" class="btn btn-secondary" onclick="hideModal('koefModal')">Отмена</button>
+                    <button type="submit" class="btn btn-primary">Сохранить</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Модальное окно для авторизации -->
+    <div id="authModal" class="modal">
+        <div class="modal-content">
+            <h2>Вход в систему</h2>
+            <form id="loginForm">
+                <div class="form-group">
+                    <label for="username">Логин</label>
+                    <input type="text" id="username" name="username" required>
+                </div>
+                <div class="form-group">
+                    <label for="password">Пароль</label>
+                    <input type="password" id="password" name="password" required>
+                </div>
+                <div class="form-actions">
+                    <button type="submit" class="btn btn-primary">Войти</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script src="/js/utils.js"></script>
+    <script src="/js/api.js"></script>
+    <script src="/js/components.js"></script>
+    <script src="/js/pages/prem-koef.js"></script>
+</body>
+</html>

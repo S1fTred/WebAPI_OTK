@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Система ОТК - Главная</title>
+    <link rel="stylesheet" href="/css/main.css">
+    <link rel="stylesheet" href="/css/components.css">
+</head>
+<body>
+    <div class="app-container">
+        <!-- Шапка -->
+        <header class="header">
+            <div class="header-content">
+                <h1 class="logo">Система ОТК</h1>
+                <nav class="nav">
+                    <a href="/index.html" class="nav-link active">Главная</a>
+                    <a href="/pages/ml-closure.html" class="nav-link">Закрытие МЛ</a>
+                    <a href="/pages/prem-koef.html" class="nav-link">Премиальные коэффициенты</a>
+                    <a href="/pages/dce-catalog.html" class="nav-link">Каталог ДСЕ</a>
+                </nav>
+            </div>
+        </header>
+
+        <!-- Основной контент -->
+        <main class="main-content">
+            <div class="welcome-section">
+                <h2>Добро пожаловать в систему учета ОТК</h2>
+
+                <div class="cards-grid">
+                    <!-- Карточка: Закрытие МЛ -->
+                    <div class="card card-clickable" onclick="location.href='/pages/ml-closure.html'">
+                        <h3>Закрытие МЛ</h3>
+                        <p>Поиск и закрытие маршрутных листов и операций</p>
+                    </div>
+
+                    <!-- Карточка: Премиальные коэффициенты -->
+                    <div class="card card-clickable" onclick="location.href='/pages/prem-koef.html'">
+                        <h3>Премиальные коэффициенты</h3>
+                        <p>Управление коэффициентами премирования</p>
+                    </div>
+
+                    <!-- Карточка: Каталог ДСЕ -->
+                    <div class="card card-clickable" onclick="location.href='/pages/dce-catalog.html'">
+                        <h3>Каталог ДСЕ</h3>
+                        <p>Просмотр деталей и сборочных единиц</p>
+                    </div>
+                </div>
+            </div>
+        </main>
+
+    <!-- Модальное окно для авторизации -->
+    <div id="authModal" class="modal">
+        <div class="modal-content">
+            <h2>Вход в систему</h2>
+            <form id="loginForm">
+                <div class="form-group">
+                    <label for="username">Логин</label>
+                    <input type="text" id="username" name="username" required>
+                </div>
+                <div class="form-group">
+                    <label for="password">Пароль</label>
+                    <input type="password" id="password" name="password" required>
+                </div>
+                <div class="form-actions">
+                    <button type="submit" class="btn btn-primary">Войти</button>
+                </div>
+            </form>
+            <p class="auth-link">
+                Нет аккаунта? <a href="#" id="showRegister">Зарегистрироваться</a>
+            </p>
+        </div>
+    </div>
+
+    <script src="/js/utils.js"></script>
+    <script src="/js/api.js"></script>
+    <script src="/js/components.js"></script>
+    <script>
+        // Проверка авторизации при загрузке
+        document.addEventListener('DOMContentLoaded', () => {
+            checkAuth();
+        });
+    </script>
+</body>
+</html>

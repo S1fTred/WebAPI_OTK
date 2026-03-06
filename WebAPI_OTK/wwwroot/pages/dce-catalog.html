@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Каталог ДСЕ - Система ОТК</title>
+    <link rel="stylesheet" href="/css/main.css">
+    <link rel="stylesheet" href="/css/components.css">
+    <link rel="stylesheet" href="/css/pages.css">
+</head>
+<body>
+    <div class="app-container">
+        <!-- Шапка -->
+        <header class="header">
+            <div class="header-content">
+                <h1 class="logo">Система ОТК</h1>
+                <nav class="nav">
+                    <a href="/index.html" class="nav-link">Главная</a>
+                    <a href="/pages/ml-closure.html" class="nav-link">Закрытие МЛ</a>
+                    <a href="/pages/prem-koef.html" class="nav-link">Премиальные коэффициенты</a>
+                    <a href="/pages/dce-catalog.html" class="nav-link active">Каталог ДСЕ</a>
+                </nav>
+            </div>
+        </header>
+
+        <!-- Основной контент -->
+        <main class="main-content">
+            <div class="page-header">
+                <h2>Каталог ДСЕ</h2>
+            </div>
+
+            <!-- Панель поиска и фильтров -->
+            <div class="search-bar">
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="searchInput">Поиск по коду или наименованию</label>
+                        <input type="text" id="searchInput" placeholder="Введите код или название...">
+                    </div>
+                    <div class="form-group">
+                        <label for="productFilter">Изделие</label>
+                        <select id="productFilter">
+                            <option value="">Все изделия</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>&nbsp;</label>
+                        <button id="resetFiltersBtn" class="btn btn-secondary btn-block">Сбросить</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Информация о пагинации -->
+            <div class="pagination-info">
+                <span id="recordsInfo">Загрузка...</span>
+            </div>
+
+            <!-- Таблица ДСЕ -->
+            <div class="table-container">
+                <table class="data-table">
+                    <thead>
+                        <tr>
+                            <th>Код</th>
+                            <th>Наименование</th>
+                            <th>Изделие</th>
+                            <th>Действия</th>
+                        </tr>
+                    </thead>
+                    <tbody id="dceTableBody">
+                        <!-- Строки будут добавлены через JS -->
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Пагинация -->
+            <div id="paginationContainer" class="pagination">
+                <!-- Кнопки пагинации будут добавлены через JS -->
+            </div>
+        </main>
+    </div>
+
+    <!-- Модальное окно деталей ДСЕ -->
+    <div id="dceModal" class="modal">
+        <div class="modal-content">
+            <span class="modal-close">&times;</span>
+            <h2>Детали ДСЕ</h2>
+            <div id="dceDetails">
+                <!-- Детали будут загружены через JS -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Модальное окно для авторизации -->
+    <div id="authModal" class="modal">
+        <div class="modal-content">
+            <h2>Вход в систему</h2>
+            <form id="loginForm">
+                <div class="form-group">
+                    <label for="username">Логин</label>
+                    <input type="text" id="username" name="username" required>
+                </div>
+                <div class="form-group">
+                    <label for="password">Пароль</label>
+                    <input type="password" id="password" name="password" required>
+                </div>
+                <div class="form-actions">
+                    <button type="submit" class="btn btn-primary">Войти</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script src="/js/utils.js"></script>
+    <script src="/js/api.js"></script>
+    <script src="/js/components.js"></script>
+    <script src="/js/pages/dce-catalog.js"></script>
+</body>
+</html>

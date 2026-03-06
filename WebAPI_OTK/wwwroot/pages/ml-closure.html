@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Закрытие МЛ - Система ОТК</title>
+    <link rel="stylesheet" href="/css/main.css">
+    <link rel="stylesheet" href="/css/components.css">
+    <link rel="stylesheet" href="/css/pages.css">
+</head>
+<body>
+    <div class="app-container">
+        <!-- Шапка -->
+        <header class="header">
+            <div class="header-content">
+                <h1 class="logo">Система ОТК</h1>
+                <nav class="nav">
+                    <a href="/index.html" class="nav-link">Главная</a>
+                    <a href="/pages/ml-closure.html" class="nav-link active">Закрытие МЛ</a>
+                    <a href="/pages/prem-koef.html" class="nav-link">Премиальные коэффициенты</a>
+                    <a href="/pages/dce-catalog.html" class="nav-link">Каталог ДСЕ</a>
+                </nav>
+            </div>
+        </header>
+
+        <!-- Основной контент -->
+        <main class="main-content">
+            <div class="page-header">
+                <h2>Закрытие маршрутных листов</h2>
+            </div>
+
+            <!-- Форма поиска МЛ -->
+            <div class="search-bar">
+                <h3>Поиск маршрутного листа</h3>
+                <form id="searchForm" class="search-input-group">
+                    <div class="form-group">
+                        <label for="searchType">Тип поиска</label>
+                        <select id="searchType" name="searchType">
+                            <option value="ml">По номеру МЛ</option>
+                            <option value="product">По изделию</option>
+                            <option value="dce">По ДСЕ</option>
+                        </select>
+                    </div>
+                    <div class="form-group" id="mlNumberGroup">
+                        <label for="mlNumber">Номер МЛ</label>
+                        <input type="text" id="mlNumber" name="mlNumber" placeholder="Введите номер МЛ">
+                    </div>
+                    <div class="form-group hidden" id="productGroup">
+                        <label for="productSelect">Изделие</label>
+                        <select id="productSelect" name="productSelect">
+                            <option value="">Выберите изделие...</option>
+                        </select>
+                    </div>
+                    <div class="form-group hidden" id="dceGroup">
+                        <label for="dceSelect">ДСЕ</label>
+                        <select id="dceSelect" name="dceSelect">
+                            <option value="">Выберите ДСЕ...</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="statusFilter">Статус</label>
+                        <select id="statusFilter" name="statusFilter">
+                            <option value="">Все</option>
+                            <option value="open" selected>Открытые</option>
+                            <option value="closed">Закрытые</option>
+                        </select>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Найти</button>
+                </form>
+            </div>
+
+            <!-- Список найденных МЛ -->
+            <div id="mlListSection" class="hidden">
+                <div class="section-header">
+                    <h3>Найденные маршрутные листы</h3>
+                    <span id="mlCount" class="badge badge-primary">0</span>
+                </div>
+                <div id="mlListContainer" class="table-container">
+                    <!-- Таблица МЛ будет здесь -->
+                </div>
+            </div>
+
+            <!-- Детали выбранного МЛ -->
+            <div id="mlDetailsSection" class="hidden mt-lg">
+                <div class="section-header">
+                    <h3>Маршрутный лист: <span id="selectedMlNumber"></span></h3>
+                    <div class="section-actions">
+                        <button id="closeMlBtn" class="btn btn-success" disabled>
+                            Закрыть МЛ
+                        </button>
+                        <button id="backToListBtn" class="btn btn-secondary">
+                            Назад к списку
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Информация о МЛ -->
+                <div class="card mb-md">
+                    <div class="ml-info-grid">
+                        <div class="info-item">
+                            <span class="info-label">Изделие:</span>
+                            <span id="mlProduct" class="info-value">-</span>
+                        </div>
+                        <div class="info-item">
+                            <span class="info-label">ДСЕ:</span>
+                            <span id="mlDce" class="info-value">-</span>
+                        </div>
+                        <div class="info-item">
+                            <span class="info-label">Дата создания:</span>
+                            <span id="mlDateCreated" class="info-value">-</span>
+                        </div>
+                        <div class="info-item">
+                            <span class="info-label">Статус:</span>
+                            <span id="mlStatus" class="info-value">-</span>
+                        </div>
+                        <div class="info-item">
+                            <span class="info-label">Сотрудник ОТК:</span>
+                            <span id="mlEmployee" class="info-value">-</span>
+                        </div>
+                        <div class="info-item">
+                            <span class="info-label">Количество операций:</span>
+                            <span id="mlOperationCount" class="info-value">-</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Фильтры операций -->
+                <div class="search-bar">
+                    <h4>Фильтры операций</h4>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="operationStatusFilter">Статус операции</label>
+                            <select id="operationStatusFilter">
+                                <option value="">Все</option>
+                                <option value="В работе">В работе</option>
+                                <option value="Завершена">Завершена</option>
+                                <option value="Отменена">Отменена</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="operationEmployeeFilter">Сотрудник</label>
+                            <select id="operationEmployeeFilter">
+                                <option value="">Все сотрудники</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="operationDateFrom">Дата с</label>
+                            <input type="date" id="operationDateFrom">
+                        </div>
+                        <div class="form-group">
+                            <label for="operationDateTo">Дата по</label>
+                            <input type="date" id="operationDateTo">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Список операций -->
+                <div id="operationsContainer" class="table-container">
+                    <!-- Таблица операций будет здесь -->
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Модальное окно закрытия МЛ -->
+    <div id="closeMlModal" class="modal">
+        <div class="modal-content">
+            <span class="modal-close">&times;</span>
+            <h2>Закрытие маршрутного листа</h2>
+            <form id="closeMlForm">
+                <div class="form-group">
+                    <label for="otkEmployee">Сотрудник ОТК *</label>
+                    <select id="otkEmployee" name="otkEmployee" required>
+                        <option value="">Выберите сотрудника...</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="otkQuantity">Количество ОТК *</label>
+                    <input type="number" id="otkQuantity" name="otkQuantity" min="0" required>
+                </div>
+                <div class="form-group">
+                    <label for="defectQuantity">Количество брака</label>
+                    <input type="number" id="defectQuantity" name="defectQuantity" min="0" value="0">
+                </div>
+                <div class="form-actions">
+                    <button type="button" class="btn btn-secondary" onclick="hideModal('closeMlModal')">Отмена</button>
+                    <button type="submit" class="btn btn-success">Закрыть МЛ</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Модальное окно для авторизации -->
+    <div id="authModal" class="modal">
+        <div class="modal-content">
+            <h2>Вход в систему</h2>
+            <form id="loginForm">
+                <div class="form-group">
+                    <label for="username">Логин</label>
+                    <input type="text" id="username" name="username" required>
+                </div>
+                <div class="form-group">
+                    <label for="password">Пароль</label>
+                    <input type="password" id="password" name="password" required>
+                </div>
+                <div class="form-actions">
+                    <button type="submit" class="btn btn-primary">Войти</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script src="/js/utils.js"></script>
+    <script src="/js/api.js"></script>
+    <script src="/js/components.js"></script>
+    <script src="/js/pages/ml-closure.js"></script>
+</body>
+</html>
