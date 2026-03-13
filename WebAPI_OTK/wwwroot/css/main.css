@@ -2,12 +2,12 @@
    ЦВЕТОВАЯ СХЕМА И ГЛОБАЛЬНЫЕ ПЕРЕМЕННЫЕ
    ======================================== */
 :root {
-    /* Основные цвета */
-    --color-primary: #FFFD82;        /* Светло-желтый - акценты, кнопки */
-    --color-dark: #0A0903;           /* Почти черный - текст */
-    --color-accent: #EFCEFA;         /* Светло-фиолетовый - вторичные акценты */
-    --color-neutral: #C89B7B;        /* Бежево-коричневый - нейтральные элементы */
-    --color-background: #2F3E46;     /* Темно-серый - фон */
+    /* Основные цвета - Новая палитра */
+    --color-primary: #DAF7DC;        /* Светло-зеленый - акценты, кнопки */
+    --color-dark: #2F4858;           /* Темно-синий - темные элементы */
+    --color-accent: #A69CAC;         /* Серо-лиловый - вторичные акценты */
+    --color-neutral: #A69CAC;        /* Серо-лиловый - нейтральные элементы */
+    --color-background: #2F4858;     /* Темно-синий - основной фон */
     
     /* Дополнительные цвета */
     --color-white: #FFFFFF;
@@ -17,10 +17,10 @@
     --color-info: #2196F3;
     
     /* Оттенки для UI */
-    --color-bg-light: #3a4a52;
-    --color-bg-lighter: #4a5a62;
-    --color-border: rgba(200, 155, 123, 0.3);
-    --color-shadow: rgba(10, 9, 3, 0.3);
+    --color-bg-light: #3a5a6e;
+    --color-bg-lighter: #4a6a7e;
+    --color-border: rgba(166, 156, 172, 0.3);
+    --color-shadow: rgba(47, 72, 88, 0.5);
     
     /* Типографика */
     --font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
@@ -67,7 +67,7 @@ html {
 body {
     font-family: var(--font-family);
     background-color: var(--color-background);
-    color: var(--color-dark);
+    color: var(--color-white);
     line-height: 1.6;
     min-height: 100vh;
 }
@@ -83,10 +83,10 @@ body {
 
 /* Шапка */
 .header {
-    background-color: var(--color-dark);
+    background-color: #1f3544;
     color: var(--color-white);
     padding: var(--spacing-sm) var(--spacing-lg);
-    box-shadow: var(--shadow-sm);
+    box-shadow: 0 2px 8px var(--color-shadow);
     position: sticky;
     top: 0;
     z-index: 100;
@@ -133,6 +133,7 @@ body {
 .nav-link.active {
     background-color: var(--color-primary);
     color: var(--color-dark);
+    font-weight: 600;
 }
 
 /* Информация о пользователе */
@@ -158,7 +159,7 @@ body {
 
 /* Футер */
 .footer {
-    background-color: var(--color-dark);
+    background-color: #1f3544;
     color: var(--color-neutral);
     text-align: center;
     padding: var(--spacing-lg);
@@ -249,11 +250,12 @@ body {
 .badge-primary {
     background-color: var(--color-primary);
     color: var(--color-dark);
+    font-weight: 600;
 }
 
 .badge-secondary {
     background-color: var(--color-accent);
-    color: var(--color-dark);
+    color: var(--color-white);
 }
 
 .badge-success {
@@ -453,10 +455,10 @@ textarea:focus {
 /* Высокая контрастность */
 @media (prefers-contrast: high) {
     :root {
-        --color-bg: #000000;
-        --color-bg-light: #1a1a1a;
-        --color-bg-lighter: #2a2a2a;
+        --color-bg: #1f3544;
+        --color-bg-light: #2F4858;
+        --color-bg-lighter: #3a5a6e;
         --color-white: #ffffff;
-        --color-border: #ffffff;
+        --color-border: #A69CAC;
     }
 }

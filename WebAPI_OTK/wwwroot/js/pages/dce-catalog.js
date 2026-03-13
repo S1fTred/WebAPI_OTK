@@ -4,7 +4,7 @@
 
 // Глобальное состояние
 let currentPage = 1;
-let pageSize = 50;
+let pageSize = 10; // Уменьшено для демонстрации пагинации
 let totalRecords = 0;
 let totalPages = 0;
 let products = [];
@@ -75,6 +75,13 @@ function initEventHandlers() {
         applyFilters();
     });
     
+    // Изменение размера страницы
+    document.getElementById('pageSizeSelect').addEventListener('change', (e) => {
+        pageSize = parseInt(e.target.value);
+        currentPage = 1;
+        loadDCE();
+    });
+    
     // Сброс фильтров
     document.getElementById('resetFiltersBtn').addEventListener('click', resetFilters);
     
@@ -91,16 +98,16 @@ function initEventHandlers() {
 async function loadDCE() {
     try {
         const params = {
-            страница: currentPage,
-            размерСтраницы: pageSize
+            page: currentPage,
+            pageSize: pageSize
         };
         
         if (currentFilters.поиск) {
-            params.поиск = currentFilters.поиск;
+            params.search = currentFilters.поиск;
         }
         
         if (currentFilters.изделиеID) {
-            params.изделиеID = currentFilters.изделиеID;
+            params.изделиеId = currentFilters.изделиеID;
         }
         
         const response = await dceApi.getAll(params);

@@ -20,6 +20,10 @@
                     <a href="/pages/prem-koef.html" class="nav-link">Премиальные коэффициенты</a>
                     <a href="/pages/dce-catalog.html" class="nav-link active">Каталог ДСЕ</a>
                 </nav>
+                <div class="user-info" id="userInfoBlock" style="display: none;">
+                    <span class="user-name" id="userName">Пользователь</span>
+                    <button id="logoutBtn" class="btn btn-sm btn-secondary">Выйти</button>
+                </div>
             </div>
         </header>
 
@@ -40,6 +44,15 @@
                         <label for="productFilter">Изделие</label>
                         <select id="productFilter">
                             <option value="">Все изделия</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="pageSizeSelect">Записей на странице</label>
+                        <select id="pageSizeSelect">
+                            <option value="10">10</option>
+                            <option value="20">20</option>
+                            <option value="50">50</option>
+                            <option value="100">100</option>
                         </select>
                     </div>
                     <div class="form-group">

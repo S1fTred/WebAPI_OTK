@@ -297,8 +297,20 @@ function createPagination(currentPage, totalPages, onPageChange) {
 
 // Проверка авторизации
 function checkAuth() {
-    if (!authApi.isAuthenticated()) {
-        showModal('authModal');
+    const isAuth = authApi.isAuthenticated();
+    
+    if (!isAuth) {
+        // Показываем модальное окно авторизации
+        setTimeout(() => {
+            showModal('authModal');
+        }, 100);
+        
+        // Скрываем блок с информацией о пользователе
+        const userInfoBlock = document.getElementById('userInfoBlock');
+        if (userInfoBlock) {
+            userInfoBlock.style.display = 'none';
+        }
+        
         return false;
     }
     
@@ -307,6 +319,12 @@ function checkAuth() {
     const userNameElement = document.getElementById('userName');
     if (userNameElement) {
         userNameElement.textContent = userName;
+    }
+    
+    // Показать блок с информацией о пользователе
+    const userInfoBlock = document.getElementById('userInfoBlock');
+    if (userInfoBlock) {
+        userInfoBlock.style.display = 'flex';
     }
     
     return true;
@@ -342,7 +360,13 @@ document.addEventListener('DOMContentLoaded', () => {
                         userNameElement.textContent = result.userName;
                     }
                     
-                    // Перезагрузить страницу если нужно
+                    // Показать блок с информацией о пользователе
+                    const userInfoBlock = document.getElementById('userInfoBlock');
+                    if (userInfoBlock) {
+                        userInfoBlock.style.display = 'flex';
+                    }
+                    
+                    // Перезагрузить страницу если нужно (для страниц с данными)
                     if (window.location.pathname !== '/index.html' && window.location.pathname !== '/') {
                         location.reload();
                     }
@@ -363,4 +387,29 @@ document.addEventListener('DOMContentLoaded', () => {
             showToast('Регистрация временно недоступна. Обратитесь к администратору.', 'info');
         });
     }
+    
+    // Закрытие модального окна по клавише Escape
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape') {
+            const activeModals = document.querySelectorAll('.modal.active');
+            activeModals.forEach(modal => {
+                // Не закрываем модальное окно авторизации если пользователь не авторизован
+                if (modal.id === 'authModal' && !authApi.isAuthenticated()) {
+                    return;
+                }
+                hideModal(modal.id);
+            });
+        }
+    });
+    
+    // Закрытие модального окна по клику вне его области
+    document.addEventListener('click', (e) => {
+        if (e.target.classList.contains('modal') && e.target.classList.contains('active')) {
+            // Не закрываем модальное окно авторизации если пользователь не авторизован
+            if (e.target.id === 'authModal' && !authApi.isAuthenticated()) {
+                return;
+            }
+            hideModal(e.target.id);
+        }
+    });
 });

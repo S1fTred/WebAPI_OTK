@@ -3,12 +3,16 @@
   "WorkspaceRootPath": "C:\\Users\\user\\MSVisualStudioProjects\\WebAPI_OTK\\",
   "Documents": [
     {
-      "AbsoluteMoniker": "D:0:0:{724186E4-4718-4F35-9EDA-FDF004C7A2F4}|WebAPI_OTK\\WebAPI_OTK.csproj|c:\\users\\user\\msvisualstudioprojects\\webapi_otk\\webapi_otk\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{724186E4-4718-4F35-9EDA-FDF004C7A2F4}|WebAPI_OTK\\WebAPI_OTK.csproj|solutionrelative:webapi_otk\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{724186E4-4718-4F35-9EDA-FDF004C7A2F4}|WebAPI_OTK\\WebAPI_OTK.csproj|c:\\users\\user\\msvisualstudioprojects\\webapi_otk\\webapi_otk\\wwwroot\\css\\main.css||{A5401142-F49D-43DB-90B1-F57BA349E55C}",
+      "RelativeMoniker": "D:0:0:{724186E4-4718-4F35-9EDA-FDF004C7A2F4}|WebAPI_OTK\\WebAPI_OTK.csproj|solutionrelative:webapi_otk\\wwwroot\\css\\main.css||{A5401142-F49D-43DB-90B1-F57BA349E55C}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{724186E4-4718-4F35-9EDA-FDF004C7A2F4}|WebAPI_OTK\\WebAPI_OTK.csproj|c:\\users\\user\\msvisualstudioprojects\\webapi_otk\\webapi_otk\\models\\sysdiagrams.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{724186E4-4718-4F35-9EDA-FDF004C7A2F4}|WebAPI_OTK\\WebAPI_OTK.csproj|solutionrelative:webapi_otk\\models\\sysdiagrams.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{724186E4-4718-4F35-9EDA-FDF004C7A2F4}|WebAPI_OTK\\WebAPI_OTK.csproj|c:\\users\\user\\msvisualstudioprojects\\webapi_otk\\webapi_otk\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{724186E4-4718-4F35-9EDA-FDF004C7A2F4}|WebAPI_OTK\\WebAPI_OTK.csproj|solutionrelative:webapi_otk\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     }
   ],
   "DocumentGroupContainers": [
@@ -18,21 +22,20 @@
       "DocumentGroups": [
         {
           "DockedWidth": 200,
-          "SelectedChildIndex": 0,
+          "SelectedChildIndex": 4,
           "Children": [
             {
               "$type": "Document",
-              "DocumentIndex": 0,
+              "DocumentIndex": 2,
               "Title": "Program.cs",
               "DocumentMoniker": "C:\\Users\\user\\MSVisualStudioProjects\\WebAPI_OTK\\WebAPI_OTK\\Program.cs",
               "RelativeDocumentMoniker": "WebAPI_OTK\\Program.cs",
               "ToolTip": "C:\\Users\\user\\MSVisualStudioProjects\\WebAPI_OTK\\WebAPI_OTK\\Program.cs",
               "RelativeToolTip": "WebAPI_OTK\\Program.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAABwAAAAXAAAAAAAAAA==",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAA0AAAAFAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2026-02-17T11:29:57.371Z",
-              "IsPinned": true,
-              "EditorCaption": ""
+              "IsPinned": true
             },
             {
               "$type": "Document",
@@ -45,8 +48,7 @@
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAA8AAAANAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2026-02-17T11:49:49.991Z",
-              "IsPinned": true,
-              "EditorCaption": ""
+              "IsPinned": true
             },
             {
               "$type": "Bookmark",
@@ -55,6 +57,19 @@
             {
               "$type": "Bookmark",
               "Name": "ST:0:0:{1c64b9c2-e352-428e-a56d-0ace190b99a6}"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "main.css",
+              "DocumentMoniker": "C:\\Users\\user\\MSVisualStudioProjects\\WebAPI_OTK\\WebAPI_OTK\\wwwroot\\css\\main.css",
+              "RelativeDocumentMoniker": "WebAPI_OTK\\wwwroot\\css\\main.css",
+              "ToolTip": "C:\\Users\\user\\MSVisualStudioProjects\\WebAPI_OTK\\WebAPI_OTK\\wwwroot\\css\\main.css",
+              "RelativeToolTip": "WebAPI_OTK\\wwwroot\\css\\main.css",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAABsAAAAZAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003000|",
+              "WhenOpened": "2026-03-12T18:54:24.377Z",
+              "EditorCaption": ""
             }
           ]
         }

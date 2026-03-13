@@ -10,6 +10,12 @@ let filteredOperations = [];
 let employees = [];
 let products = [];
 
+// Состояние пагинации
+let currentPage = 1;
+let pageSize = 10;
+let totalPages = 1;
+let totalCount = 0;
+
 // ========================================
 // ИНИЦИАЛИЗАЦИЯ
 // ========================================
@@ -183,10 +189,20 @@ async function handleProductChange(e) {
 async function handleSearch(e) {
     e.preventDefault();
     
+    // Сброс на первую страницу при новом поиске
+    currentPage = 1;
+    
+    await loadMlList();
+}
+
+async function loadMlList() {
     const searchType = document.getElementById('searchType').value;
     const statusFilter = document.getElementById('statusFilter').value;
     
-    const filters = {};
+    const filters = {
+        page: currentPage,
+        pageSize: pageSize
+    };
     
     // Фильтр по статусу
     if (statusFilter === 'open') {
@@ -196,7 +212,12 @@ async function handleSearch(e) {
     }
     
     // Фильтры по типу поиска
-    if (searchType === 'product') {
+    if (searchType === 'ml') {
+        const mlNumber = document.getElementById('mlNumber').value.trim();
+        if (mlNumber) {
+            filters.search = mlNumber;
+        }
+    } else if (searchType === 'product') {
         const productId = document.getElementById('productSelect').value;
         if (!productId) {
             showToast('Выберите изделие', 'warning');
@@ -213,25 +234,50 @@ async function handleSearch(e) {
     }
     
     try {
-        let mlList = await mlApi.getAll(filters);
+        console.log('Загрузка МЛ с фильтрами:', filters);
+        const response = await mlApi.getAll(filters);
+        console.log('Ответ API:', response);
         
-        // Фильтр по номеру МЛ (клиентская фильтрация)
-        if (searchType === 'ml') {
-            const mlNumber = document.getElementById('mlNumber').value.trim();
-            if (mlNumber) {
-                mlList = mlList.filter(ml => 
-                    ml.номерМЛ && ml.номерМЛ.toLowerCase().includes(mlNumber.toLowerCase())
-                );
-            }
+        // Обработка ответа с пагинацией
+        if (response && response.data && Array.isArray(response.data)) {
+            currentMlList = response.data;
+            totalCount = response.totalCount || 0;
+            totalPages = response.totalPages || 1;
+            currentPage = response.page || 1;
+            pageSize = response.pageSize || 10;
+        } else if (Array.isArray(response)) {
+            // Обратная совместимость (если API вернул массив)
+            currentMlList = response;
+            totalCount = currentMlList.length;
+            totalPages = 1;
+        } else {
+            console.error('Неожиданный формат ответа:', response);
+            currentMlList = [];
+            totalCount = 0;
+            totalPages = 1;
         }
         
-        currentMlList = mlList;
-        displayMlList(mlList);
+        console.log('Обработанные данные:', { currentMlList, totalCount, totalPages, currentPage });
+        displayMlList(currentMlList);
         
     } catch (error) {
         console.error('Ошибка поиска МЛ:', error);
         showToast('Ошибка при поиске маршрутных листов', 'error');
     }
+}
+
+// Изменение страницы
+function changePage(newPage) {
+    if (newPage < 1 || newPage > totalPages) return;
+    currentPage = newPage;
+    loadMlList();
+}
+
+// Изменение размера страницы
+function changePageSize(newSize) {
+    pageSize = newSize;
+    currentPage = 1; // Сброс на первую страницу
+    loadMlList();
 }
 
 // Отображение списка МЛ
@@ -240,7 +286,16 @@ function displayMlList(mlList) {
     const container = document.getElementById('mlListContainer');
     const countBadge = document.getElementById('mlCount');
     
-    countBadge.textContent = mlList.length;
+    // Удаляем старую пагинацию если есть
+    const oldPagination = container.nextElementSibling;
+    if (oldPagination && oldPagination.classList.contains('pagination')) {
+        oldPagination.remove();
+    }
+    
+    // Обновляем счетчик с информацией о пагинации
+    const startRecord = mlList.length > 0 ? (currentPage - 1) * pageSize + 1 : 0;
+    const endRecord = Math.min(currentPage * pageSize, totalCount);
+    countBadge.textContent = `${startRecord}-${endRecord} из ${totalCount}`;
     
     if (mlList.length === 0) {
         container.innerHTML = `
@@ -285,7 +340,70 @@ function displayMlList(mlList) {
         row.addEventListener('click', () => selectMl(mlList[index]));
     });
     
+    // Добавляем пагинацию
+    if (totalPages > 1) {
+        const paginationHtml = createMlPagination();
+        container.insertAdjacentHTML('afterend', paginationHtml);
+    }
+    
     section.classList.remove('hidden');
+}
+
+// Создание пагинации для МЛ
+function createMlPagination() {
+    let html = '<div class="pagination" style="margin-top: var(--spacing-md);">';
+    
+    // Кнопка "Назад"
+    const prevDisabled = currentPage === 1 ? 'disabled' : '';
+    html += `<button class="pagination-btn" onclick="changePage(${currentPage - 1})" ${prevDisabled}>‹ Назад</button>`;
+    
+    // Номера страниц
+    const maxButtons = 5;
+    let startPage = Math.max(1, currentPage - Math.floor(maxButtons / 2));
+    let endPage = Math.min(totalPages, startPage + maxButtons - 1);
+    
+    if (endPage - startPage < maxButtons - 1) {
+        startPage = Math.max(1, endPage - maxButtons + 1);
+    }
+    
+    if (startPage > 1) {
+        html += `<button class="pagination-btn" onclick="changePage(1)">1</button>`;
+        if (startPage > 2) {
+            html += '<span class="pagination-info">...</span>';
+        }
+    }
+    
+    for (let i = startPage; i <= endPage; i++) {
+        const activeClass = i === currentPage ? 'active' : '';
+        html += `<button class="pagination-btn ${activeClass}" onclick="changePage(${i})">${i}</button>`;
+    }
+    
+    if (endPage < totalPages) {
+        if (endPage < totalPages - 1) {
+            html += '<span class="pagination-info">...</span>';
+        }
+        html += `<button class="pagination-btn" onclick="changePage(${totalPages})">${totalPages}</button>`;
+    }
+    
+    // Кнопка "Вперед"
+    const nextDisabled = currentPage === totalPages ? 'disabled' : '';
+    html += `<button class="pagination-btn" onclick="changePage(${currentPage + 1})" ${nextDisabled}>Вперед ›</button>`;
+    
+    // Селектор размера страницы
+    html += `
+        <div class="pagination-size-selector" style="margin-left: auto;">
+            <label for="mlPageSize">Записей на странице:</label>
+            <select id="mlPageSize" onchange="changePageSize(parseInt(this.value))">
+                <option value="10" ${pageSize === 10 ? 'selected' : ''}>10</option>
+                <option value="20" ${pageSize === 20 ? 'selected' : ''}>20</option>
+                <option value="50" ${pageSize === 50 ? 'selected' : ''}>50</option>
+                <option value="100" ${pageSize === 100 ? 'selected' : ''}>100</option>
+            </select>
+        </div>
+    `;
+    
+    html += '</div>';
+    return html;
 }
 
 // ========================================
@@ -503,3 +621,8 @@ function backToList() {
     currentOperations = [];
     filteredOperations = [];
 }
+
+// Экспорт функций в глобальную область для использования в HTML
+window.changePage = changePage;
+window.changePageSize = changePageSize;
+window.finishOperation = finishOperation;

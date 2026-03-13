@@ -13,17 +13,20 @@ namespace WebAPI_OTK.Controllers
         public RouteListController(Model1 context) => _context = context;
 
         // GET: api/МЛ
-        // фильтры: ?открытые=true&изделиеId=1&дсеId=2
+        // фильтры: ?открытые=true&изделиеId=1&дсеId=2&page=1&pageSize=10&search=МЛ-001
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<МлDto>>> GetМЛ(
+        public async Task<ActionResult<object>> GetМЛ(
             [FromQuery] bool? открытые = null,
             [FromQuery] int? изделиеId = null,
-            [FromQuery] int? дсеId = null)
+            [FromQuery] int? дсеId = null,
+            [FromQuery] string? search = null,
+            [FromQuery] int page = 1,
+            [FromQuery] int pageSize = 10)
         {
             var q = _context.МЛ.AsNoTracking().AsQueryable();
 
             if (открытые.HasValue)
-                q = q.Where(m => m.Закрыт == !открытые.Value ? true : false); // открытые=true => Закрыт=false
+                q = q.Where(m => m.Закрыт == !открытые.Value); // открытые=true => Закрыт=false
 
             if (изделиеId.HasValue)
                 q = q.Where(m => m.ИзделиеID == изделиеId.Value);
@@ -31,11 +34,29 @@ namespace WebAPI_OTK.Controllers
             if (дсеId.HasValue)
                 q = q.Where(m => m.ДСЕID == дсеId.Value);
 
+            // Поиск по номеру МЛ
+            if (!string.IsNullOrWhiteSpace(search))
+                q = q.Where(m => m.НомерМЛ.Contains(search));
+
+            // Подсчет общего количества
+            var totalCount = await q.CountAsync();
+
+            // Пагинация
             var list = await q
+                .OrderByDescending(m => m.ДатаСоздания)
+                .Skip((page - 1) * pageSize)
+                .Take(pageSize)
                 .Select(ToDtoProjection())
                 .ToListAsync();
 
-            return Ok(list);
+            return Ok(new
+            {
+                data = list,
+                totalCount = totalCount,
+                page = page,
+                pageSize = pageSize,
+                totalPages = (int)Math.Ceiling(totalCount / (double)pageSize)
+            });
         }
 
         // GET: api/МЛ/открытые  

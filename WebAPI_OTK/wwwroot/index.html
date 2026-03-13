@@ -19,6 +19,10 @@
                     <a href="/pages/prem-koef.html" class="nav-link">Премиальные коэффициенты</a>
                     <a href="/pages/dce-catalog.html" class="nav-link">Каталог ДСЕ</a>
                 </nav>
+                <div class="user-info" id="userInfoBlock" style="display: none;">
+                    <span class="user-name" id="userName">Пользователь</span>
+                    <button id="logoutBtn" class="btn btn-sm btn-secondary">Выйти</button>
+                </div>
             </div>
         </header>
 
@@ -78,7 +82,21 @@
     <script>
         // Проверка авторизации при загрузке
         document.addEventListener('DOMContentLoaded', () => {
-            checkAuth();
+            const isAuth = checkAuth();
+            
+            // Показать информацию о пользователе если авторизован
+            if (isAuth) {
+                const userInfoBlock = document.getElementById('userInfoBlock');
+                if (userInfoBlock) {
+                    userInfoBlock.style.display = 'flex';
+                }
+            }
+            
+            // Обработчик кнопки выхода
+            const logoutBtn = document.getElementById('logoutBtn');
+            if (logoutBtn) {
+                logoutBtn.addEventListener('click', logout);
+            }
         });
     </script>
 </body>

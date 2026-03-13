@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "zx3GZfVLiN4=",
+  "dgSpecHash": "LEmewJvHzVk=",
   "success": true,
-  "projectFilePath": "C:\\Users\\user\\PencilProjects\\WebAPI_OTK\\WebAPI_OTK\\WebAPI_OTK\\WebAPI_OTK.csproj",
+  "projectFilePath": "C:\\Users\\user\\RiderProjects\\WebAPI_OTK\\WebAPI_OTK\\WebAPI_OTK.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\user\\.nuget\\packages\\azure.core\\1.25.0\\azure.core.1.25.0.nupkg.sha512",
     "C:\\Users\\user\\.nuget\\packages\\azure.identity\\1.7.0\\azure.identity.1.7.0.nupkg.sha512",
