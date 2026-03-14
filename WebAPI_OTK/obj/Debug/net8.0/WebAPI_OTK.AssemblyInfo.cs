@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("WebAPI_OTK")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+53b777d5e01822fb39db86e1c75d85a668b9537c")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+9f277e37c3b3a33898b8d019b641cedf202ce907")]
 [assembly: System.Reflection.AssemblyProductAttribute("WebAPI_OTK")]
 [assembly: System.Reflection.AssemblyTitleAttribute("WebAPI_OTK")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

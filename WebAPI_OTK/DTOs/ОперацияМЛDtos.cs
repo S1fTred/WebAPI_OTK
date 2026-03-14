@@ -25,6 +25,9 @@ public class ОперацияМлDto
     [JsonPropertyName("сотрудник")]
     public string? Сотрудник { get; set; }
 
+    [JsonPropertyName("табельныйНомер")]
+    public string? ТабельныйНомер { get; set; }
+
     [JsonPropertyName("оборудованиеID")]
     public int? ОборудованиеID { get; set; }
 

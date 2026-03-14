@@ -476,7 +476,11 @@ function displayOperations(operations) {
     
     const columns = [
         { label: 'Тип операции', field: 'типОперации' },
-        { label: 'Сотрудник', field: 'сотрудник' },
+        { 
+            label: 'Сотрудник', 
+            field: 'сотрудник',
+            format: (val, row) => formatEmployee(row.табельныйНомер, val)
+        },
         { label: 'Дата начала', field: 'датаНачала', format: (val) => formatDateTime(val) },
         { label: 'Дата окончания', field: 'датаОкончания', format: (val) => formatDateTime(val) },
         { label: 'Длительность (ч)', field: 'фактическаяДлительностьЧас', format: (val) => formatNumber(val, 2) },

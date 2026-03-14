@@ -278,3 +278,29 @@ function getStatusIcon(status) {
     };
     return icons[status.toLowerCase()] || '•';
 }
+
+// Форматирование ФИО в "Фамилия И.О."
+// Пример: "Иванов Иван Иванович" -> "Иванов И.И."
+function formatInitials(fullName) {
+    if (!fullName) return '-';
+    
+    const parts = fullName.trim().split(/\s+/);
+    if (parts.length < 2) return fullName;
+    
+    // Берем фамилию и первые буквы имени и отчества
+    const lastName = parts[0];
+    const firstName = parts[1] ? parts[1][0] + '.' : '';
+    const middleName = parts[2] ? parts[2][0] + '.' : '';
+    
+    return `${lastName} ${firstName}${middleName}`;
+}
+
+// Форматирование сотрудника: "Табельный номер Фамилия И.О."
+// Пример: "T-001 Иванов И.И."
+function formatEmployee(tabNumber, fullName) {
+    if (!tabNumber && !fullName) return '-';
+    if (!tabNumber) return formatInitials(fullName);
+    if (!fullName) return tabNumber;
+    
+    return `${tabNumber} ${formatInitials(fullName)}`;
+}
