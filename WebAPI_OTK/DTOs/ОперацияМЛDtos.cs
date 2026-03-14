@@ -40,6 +40,15 @@ public class ОперацияМлDto
     [JsonPropertyName("датаОкончания")]
     public DateTime? ДатаОкончания { get; set; }
 
+    [JsonPropertyName("датаВыдачи")]
+    public DateTime? ДатаВыдачи { get; set; }
+
+    [JsonPropertyName("датаИсполнения")]
+    public DateTime? ДатаИсполнения { get; set; }
+
+    [JsonPropertyName("датаЗакрытия")]
+    public DateTime? ДатаЗакрытия { get; set; }
+
     [JsonPropertyName("фактическаяДлительностьЧас")]
     public decimal? ФактическаяДлительностьЧас { get; set; }
 
@@ -72,6 +81,15 @@ public class ОперацияМлCreateDto
 
     [JsonPropertyName("датаОкончания")]
     public DateTime? ДатаОкончания { get; set; }
+
+    [JsonPropertyName("датаВыдачи")]
+    public DateTime? ДатаВыдачи { get; set; }
+
+    [JsonPropertyName("датаИсполнения")]
+    public DateTime? ДатаИсполнения { get; set; }
+
+    [JsonPropertyName("датаЗакрытия")]
+    public DateTime? ДатаЗакрытия { get; set; }
 
     [JsonPropertyName("фактическаяДлительностьЧас")]
     public decimal? ФактическаяДлительностьЧас { get; set; }

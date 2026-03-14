@@ -484,8 +484,9 @@ function displayOperations(operations) {
             field: 'сотрудник',
             format: (val, row) => formatEmployee(row.табельныйНомер, val)
         },
-        { label: 'Дата начала', field: 'датаНачала', format: (val) => formatDateTime(val) },
-        { label: 'Дата окончания', field: 'датаОкончания', format: (val) => formatDateTime(val) },
+        { label: 'Дата Выдачи', field: 'датаВыдачи', format: (val) => formatDateTime(val) },
+        { label: 'Дата Исполнения', field: 'датаИсполнения', format: (val) => formatDateTime(val) },
+        { label: 'Дата Закрытия', field: 'датаЗакрытия', format: (val) => formatDateTime(val) },
         { label: 'Длительность (ч)', field: 'фактическаяДлительностьЧас', format: (val) => formatNumber(val, 2) },
         { 
             label: 'Статус', 

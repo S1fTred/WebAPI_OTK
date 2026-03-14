@@ -28,6 +28,12 @@ namespace WebAPI_OTK
 
         public DateTime? ДатаОкончания { get; set; }
 
+        public DateTime? ДатаВыдачи { get; set; }
+
+        public DateTime? ДатаИсполнения { get; set; }
+
+        public DateTime? ДатаЗакрытия { get; set; }
+
         public decimal? ФактическаяДлительностьЧас { get; set; }
 
         [StringLength(100)]

@@ -41,10 +41,18 @@ app.MapControllers();
 using (var scope = app.Services.CreateScope())
 {
     var context = scope.ServiceProvider.GetRequiredService<Model1>();
+    
+    // Удаляем и пересоздаем БД для применения изменений схемы
+    context.Database.EnsureDeleted();
+    context.Database.EnsureCreated();
+    
     DatabaseInitializer.Initialize(context);
     
     // Добавляем операции к дополнительным МЛ
     AddOperationsToML.AddOperations(context);
+    
+    // Обновляем существующие операции с новыми полями дат
+    UpdateOperationDates.UpdateDates(context);
 }
 
 app.Run();
