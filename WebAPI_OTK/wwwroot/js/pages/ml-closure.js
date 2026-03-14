@@ -431,6 +431,9 @@ async function selectMl(ml) {
         // Скрыть список МЛ
         document.getElementById('mlListSection').classList.add('hidden');
         
+        // Скрыть блок поиска
+        document.querySelector('.search-bar').classList.add('hidden');
+        
         // Прокрутка к деталям
         document.getElementById('mlDetailsSection').scrollIntoView({ behavior: 'smooth' });
         
@@ -657,6 +660,9 @@ async function handleCloseMl(e) {
 function backToList() {
     document.getElementById('mlDetailsSection').classList.add('hidden');
     document.getElementById('mlListSection').classList.remove('hidden');
+    
+    // Показать блок поиска
+    document.querySelector('.search-bar').classList.remove('hidden');
     
     // Сброс фильтров операций
     document.getElementById('operationStatusFilter').value = '';
