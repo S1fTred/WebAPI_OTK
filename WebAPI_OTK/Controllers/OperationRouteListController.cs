@@ -159,6 +159,29 @@ namespace WebAPI_OTK.Controllers
             return NoContent();
         }
 
+        // PUT: api/ОперацияМЛ/отменить/5
+        [HttpPut("cancel/{id:int}")]
+        public async Task<IActionResult> ОтменитьОперацию(int id)
+        {
+            var entity = await _context.Операция_МЛ.FindAsync(id);
+            if (entity == null) return NotFound(new { message = "Операция не найдена" });
+
+            // Проверяем, что операция завершена (можно отменить только завершенные операции)
+            if (entity.Статус != "Завершена")
+            {
+                return BadRequest(new { message = "Можно отменить только завершенные операции" });
+            }
+
+            // Помечаем операцию как отмененную (не удаляем для сохранения истории)
+            entity.Статус = "Отменена";
+            entity.Примечание = string.IsNullOrEmpty(entity.Примечание) 
+                ? $"Отменена {DateTime.Now:dd.MM.yyyy HH:mm}" 
+                : $"{entity.Примечание} | Отменена {DateTime.Now:dd.MM.yyyy HH:mm}";
+
+            await _context.SaveChangesAsync();
+            return Ok(new { message = "Операция отменена" });
+        }
+
         private static System.Linq.Expressions.Expression<Func<Операция_МЛ, ОперацияМлDto>> ToDtoProjection()
         {
             return o => new ОперацияМлDto

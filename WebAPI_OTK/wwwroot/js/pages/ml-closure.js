@@ -496,7 +496,13 @@ function displayOperations(operations) {
             label: 'Завершить',
             class: 'btn-sm btn-success',
             handler: (index) => finishOperation(operations[index]),
-            disabled: (row) => row.статус === 'Завершена'
+            disabled: (row) => row.статус === 'Завершена' || row.статус === 'Отменена'
+        },
+        {
+            label: 'Отменить',
+            class: 'btn-sm btn-warning',
+            handler: (index) => cancelOperation(operations[index]),
+            disabled: (row) => row.статус !== 'Завершена'
         }
     ];
     
@@ -506,6 +512,21 @@ function displayOperations(operations) {
     });
     
     container.innerHTML = tableHtml;
+    
+    // Добавляем обработчики событий для кнопок действий
+    const actionButtons = container.querySelectorAll('.table-actions button');
+    actionButtons.forEach((button, btnIndex) => {
+        const rowIndex = Math.floor(btnIndex / rowActions.length);
+        const actionIndex = btnIndex % rowActions.length;
+        const action = rowActions[actionIndex];
+        
+        button.addEventListener('click', (e) => {
+            e.stopPropagation();
+            if (!button.disabled) {
+                action.handler(rowIndex);
+            }
+        });
+    });
 }
 
 // Применение фильтров к операциям
@@ -562,6 +583,29 @@ async function finishOperation(operation) {
             } catch (error) {
                 console.error('Ошибка завершения операции:', error);
                 showToast('Ошибка при завершении операции', 'error');
+            }
+        }
+    );
+}
+
+// Отмена операции
+async function cancelOperation(operation) {
+    const message = `Отменить операцию "${operation.типОперации}"?\n\nОперация будет помечена как отмененная. Это действие нельзя отменить.`;
+    
+    confirmDialog(
+        message,
+        async () => {
+            try {
+                await operationApi.cancel(operation.id);
+                showToast('Операция отменена', 'success');
+                
+                // Перезагрузка операций
+                await selectMl(currentMl);
+                
+            } catch (error) {
+                console.error('Ошибка отмены операции:', error);
+                const message = error.response?.data?.message || 'Ошибка при отмене операции';
+                showToast(message, 'error');
             }
         }
     );

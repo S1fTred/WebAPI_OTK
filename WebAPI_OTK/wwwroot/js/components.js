@@ -234,7 +234,7 @@ function createTable(columns, data, options = {}) {
             rowActions.forEach(action => {
                 const disabled = action.disabled && action.disabled(row) ? 'disabled' : '';
                 html += `<button class="btn ${action.class || 'btn-sm btn-primary'}" 
-                                onclick="(${action.handler})(${index})" 
+                                data-row-index="${index}"
                                 ${disabled}>
                             ${action.label}
                         </button>`;

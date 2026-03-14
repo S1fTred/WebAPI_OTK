@@ -170,6 +170,9 @@ const operationApi = {
     // Завершить операцию
     finish: (id) => api.put(`/OperationRouteList/finish/${id}`, {}),
     
+    // Отменить операцию
+    cancel: (id) => api.put(`/OperationRouteList/cancel/${id}`, {}),
+    
     // Удалить операцию
     delete: (id) => api.delete(`/OperationRouteList/${id}`)
 };
