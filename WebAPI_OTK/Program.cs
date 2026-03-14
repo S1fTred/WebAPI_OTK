@@ -42,6 +42,9 @@ using (var scope = app.Services.CreateScope())
 {
     var context = scope.ServiceProvider.GetRequiredService<Model1>();
     DatabaseInitializer.Initialize(context);
+    
+    // Добавляем операции к дополнительным МЛ
+    AddOperationsToML.AddOperations(context);
 }
 
 app.Run();

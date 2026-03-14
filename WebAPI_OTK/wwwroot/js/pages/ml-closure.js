@@ -453,7 +453,6 @@ function displayMlDetails(ml) {
     document.getElementById('mlStatus').innerHTML = statusHtml;
     
     document.getElementById('mlEmployee').textContent = ml.сотрудникОТК || '-';
-    document.getElementById('mlOperationCount').textContent = ml.количествоОпераций || 0;
     
     // Кнопка закрытия МЛ
     const closeMlBtn = document.getElementById('closeMlBtn');
