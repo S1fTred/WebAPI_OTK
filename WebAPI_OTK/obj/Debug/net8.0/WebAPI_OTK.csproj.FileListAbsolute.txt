@@ -774,3 +774,15 @@ C:\Users\user\RiderProjects\WebAPI_OTK\WebAPI_OTK\obj\Debug\net8.0\refint\WebAPI
 C:\Users\user\RiderProjects\WebAPI_OTK\WebAPI_OTK\obj\Debug\net8.0\WebAPI_OTK.pdb
 C:\Users\user\RiderProjects\WebAPI_OTK\WebAPI_OTK\obj\Debug\net8.0\WebAPI_OTK.genruntimeconfig.cache
 C:\Users\user\RiderProjects\WebAPI_OTK\WebAPI_OTK\obj\Debug\net8.0\ref\WebAPI_OTK.dll
+C:\Users\matve\VSProjects\WebAPI_OTK\WebAPI_OTK\obj\Debug\net8.0\WebAPI_OTK.csproj.AssemblyReference.cache
+C:\Users\matve\VSProjects\WebAPI_OTK\WebAPI_OTK\obj\Debug\net8.0\rpswa.dswa.cache.json
+C:\Users\matve\VSProjects\WebAPI_OTK\WebAPI_OTK\obj\Debug\net8.0\WebAPI_OTK.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\matve\VSProjects\WebAPI_OTK\WebAPI_OTK\obj\Debug\net8.0\WebAPI_OTK.AssemblyInfoInputs.cache
+C:\Users\matve\VSProjects\WebAPI_OTK\WebAPI_OTK\obj\Debug\net8.0\WebAPI_OTK.AssemblyInfo.cs
+C:\Users\matve\VSProjects\WebAPI_OTK\WebAPI_OTK\obj\Debug\net8.0\WebAPI_OTK.csproj.CoreCompileInputs.cache
+C:\Users\matve\VSProjects\WebAPI_OTK\WebAPI_OTK\obj\Debug\net8.0\WebAPI_OTK.MvcApplicationPartsAssemblyInfo.cs
+C:\Users\matve\VSProjects\WebAPI_OTK\WebAPI_OTK\obj\Debug\net8.0\WebAPI_OTK.MvcApplicationPartsAssemblyInfo.cache
+C:\Users\matve\VSProjects\WebAPI_OTK\WebAPI_OTK\obj\Debug\net8.0\WebAPI_OTK.sourcelink.json
+C:\Users\matve\VSProjects\WebAPI_OTK\WebAPI_OTK\obj\Debug\net8.0\WebAPI_OTK.dll
+C:\Users\matve\VSProjects\WebAPI_OTK\WebAPI_OTK\obj\Debug\net8.0\refint\WebAPI_OTK.dll
+C:\Users\matve\VSProjects\WebAPI_OTK\WebAPI_OTK\obj\Debug\net8.0\WebAPI_OTK.pdb
