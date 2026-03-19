@@ -92,14 +92,18 @@ namespace WebAPI_OTK
 
             // Конфигурация Операция_МЛ
             modelBuilder.Entity<Операция_МЛ>()
-                .Property(e => e.ФактическаяДлительностьЧас)
-                .HasPrecision(5, 2);
-
-            modelBuilder.Entity<Операция_МЛ>()
                 .HasMany(e => e.Зарплата)
                 .WithOne(e => e.Операция_МЛ)
                 .HasForeignKey(e => e.ОперацияМЛID)
                 .OnDelete(DeleteBehavior.SetNull);
+
+            modelBuilder.Entity<Операция_МЛ>()
+                .Property(e => e.НормаВремениЧас)
+                .HasPrecision(10, 2);
+
+            modelBuilder.Entity<Операция_МЛ>()
+                .Property(e => e.ЦенаЗаЧас)
+                .HasPrecision(10, 2);
 
             // Конфигурация ПремиальныеКоэффициенты
             modelBuilder.Entity<ПремиальныеКоэффициенты>()

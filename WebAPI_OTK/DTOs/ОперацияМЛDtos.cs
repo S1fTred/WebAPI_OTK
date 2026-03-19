@@ -34,23 +34,41 @@ public class ОперацияМлDto
     [JsonPropertyName("оборудование")]
     public string? Оборудование { get; set; }
 
-    [JsonPropertyName("датаНачала")]
-    public DateTime ДатаНачала { get; set; }
+    [JsonPropertyName("количество")]
+    public int? Количество { get; set; }
 
-    [JsonPropertyName("датаОкончания")]
-    public DateTime? ДатаОкончания { get; set; }
+    [JsonPropertyName("нормаВремениЧас")]
+    public decimal? НормаВремениЧас { get; set; }
 
-    [JsonPropertyName("датаВыдачи")]
-    public DateTime? ДатаВыдачи { get; set; }
+    [JsonPropertyName("названиеТарифа")]
+    public string? НазваниеТарифа { get; set; }
+
+    [JsonPropertyName("ценаЗаЧас")]
+    public decimal? ЦенаЗаЧас { get; set; }
+
+    [JsonPropertyName("базоваяСумма")]
+    public decimal? БазоваяСумма { get; set; }
+
+    [JsonPropertyName("коэффициентСделки")]
+    public decimal? КоэффициентСделки { get; set; }
+
+    [JsonPropertyName("суммаНадбавки")]
+    public decimal? СуммаНадбавки { get; set; }
+
+    [JsonPropertyName("коэффициентПремии")]
+    public decimal? КоэффициентПремии { get; set; }
+
+    [JsonPropertyName("суммаПремии")]
+    public decimal? СуммаПремии { get; set; }
+
+    [JsonPropertyName("итого")]
+    public decimal? Итого { get; set; }
 
     [JsonPropertyName("датаИсполнения")]
     public DateTime? ДатаИсполнения { get; set; }
 
     [JsonPropertyName("датаЗакрытия")]
     public DateTime? ДатаЗакрытия { get; set; }
-
-    [JsonPropertyName("фактическаяДлительностьЧас")]
-    public decimal? ФактическаяДлительностьЧас { get; set; }
 
     [JsonPropertyName("подразделение")]
     public string? Подразделение { get; set; }
@@ -76,23 +94,23 @@ public class ОперацияМлCreateDto
     [JsonPropertyName("оборудованиеID")]
     public int? ОборудованиеID { get; set; }
 
-    [JsonPropertyName("датаНачала")]
-    public DateTime ДатаНачала { get; set; }
+    [JsonPropertyName("количество")]
+    public int? Количество { get; set; }
 
-    [JsonPropertyName("датаОкончания")]
-    public DateTime? ДатаОкончания { get; set; }
+    [JsonPropertyName("нормаВремениЧас")]
+    public decimal? НормаВремениЧас { get; set; }
 
-    [JsonPropertyName("датаВыдачи")]
-    public DateTime? ДатаВыдачи { get; set; }
+    [JsonPropertyName("названиеТарифа")]
+    public string? НазваниеТарифа { get; set; }
+
+    [JsonPropertyName("ценаЗаЧас")]
+    public decimal? ЦенаЗаЧас { get; set; }
 
     [JsonPropertyName("датаИсполнения")]
     public DateTime? ДатаИсполнения { get; set; }
 
     [JsonPropertyName("датаЗакрытия")]
     public DateTime? ДатаЗакрытия { get; set; }
-
-    [JsonPropertyName("фактическаяДлительностьЧас")]
-    public decimal? ФактическаяДлительностьЧас { get; set; }
 
     [JsonPropertyName("подразделение")]
     public string? Подразделение { get; set; }

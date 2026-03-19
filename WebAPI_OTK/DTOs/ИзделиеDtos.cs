@@ -143,9 +143,6 @@ public class КартаОперацияDto
 
     [JsonPropertyName("датаОкончания")]
     public DateTime? ДатаОкончания { get; set; }
-
-    [JsonPropertyName("длительностьЧас")]
-    public decimal? ДлительностьЧас { get; set; }
 }
 
 // ---------- CREATE / UPDATE ----------

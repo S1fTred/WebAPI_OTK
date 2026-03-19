@@ -30,8 +30,8 @@ namespace WebAPI_OTK.Controllers
             var rows = await _context.Операция_МЛ
                 .AsNoTracking()
                 .Where(o =>
-                    o.ДатаНачала >= начало &&
-                    o.ДатаНачала <= конец &&
+                    o.ДатаЗакрытия >= начало &&
+                    o.ДатаЗакрытия <= конец &&
                     o.Статус == "Завершена" &&
                     o.Подразделение == подразделение)
                 .GroupBy(o => new { o.СотрудникID, ФИО = o.Сотрудник.ФИО })
@@ -39,14 +39,12 @@ namespace WebAPI_OTK.Controllers
                 {
                     СотрудникID = g.Key.СотрудникID,
                     ФИО = g.Key.ФИО,
-                    ВсегоЧасов = g.Sum(x => x.ФактическаяДлительностьЧас ?? 0m),
+                    ВсегоЧасов = 0m,
                     КоличествоОпераций = g.Count(),
-                    СуммаОплаты = g.Sum(x =>
-                        // базовая ставка * часы * множитель выходного
-                        500m *
-                        (x.ФактическаяДлительностьЧас ?? 0m) *
-                        ((x.ДатаНачала.DayOfWeek == DayOfWeek.Saturday || x.ДатаНачала.DayOfWeek == DayOfWeek.Sunday) ? 2.0m : 1.0m)
-                    )
+                    СуммаОплаты = g.Count() * 500m * 
+                        (g.Any(x => x.ДатаИсполнения.HasValue && 
+                            (x.ДатаИсполнения.Value.DayOfWeek == DayOfWeek.Saturday || 
+                             x.ДатаИсполнения.Value.DayOfWeek == DayOfWeek.Sunday)) ? 2.0m : 1.0m)
                 })
                 .OrderBy(r => r.ФИО)
                 .ToListAsync();

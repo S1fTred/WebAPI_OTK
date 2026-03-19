@@ -24,36 +24,37 @@ namespace WebAPI_OTK
 
         public int СотрудникID { get; set; }
 
-        public DateTime ДатаНачала { get; set; }
+        public int? Количество { get; set; }
 
-        public DateTime? ДатаОкончания { get; set; }
+        public decimal? НормаВремениЧас { get; set; }
 
-        public DateTime? ДатаВыдачи { get; set; }
+        [StringLength(50)]
+        public string? НазваниеТарифа { get; set; }
+
+        public decimal? ЦенаЗаЧас { get; set; }
 
         public DateTime? ДатаИсполнения { get; set; }
 
         public DateTime? ДатаЗакрытия { get; set; }
 
-        public decimal? ФактическаяДлительностьЧас { get; set; }
-
         [StringLength(100)]
-        public string Подразделение { get; set; }
+        public string? Подразделение { get; set; }
 
         [StringLength(50)]
-        public string Статус { get; set; }
+        public string? Статус { get; set; }
 
         [StringLength(500)]
-        public string Примечание { get; set; }
+        public string? Примечание { get; set; }
 
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<Зарплата> Зарплата { get; set; }
 
-        public virtual МЛ МЛ { get; set; }
+        public virtual МЛ? МЛ { get; set; }
 
-        public virtual Оборудование Оборудование { get; set; }
+        public virtual Оборудование? Оборудование { get; set; }
 
-        public virtual Сотрудник Сотрудник { get; set; }
+        public virtual Сотрудник? Сотрудник { get; set; }
 
-        public virtual ТипОперации ТипОперации { get; set; }
+        public virtual ТипОперации? ТипОперации { get; set; }
     }
 }

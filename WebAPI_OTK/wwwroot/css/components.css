@@ -196,23 +196,33 @@
     padding: var(--spacing-md);
     overflow-x: auto;
     border: 1px solid var(--color-border);
+    /* Увеличиваем максимальную ширину для больших таблиц */
+    max-width: 100%;
 }
 
 table {
-    width: 100%;
+    width: max-content; /* Таблица растягивается по содержимому */
+    min-width: 100%; /* Но не меньше контейнера */
     border-collapse: collapse;
+    font-size: var(--font-size-sm); /* Немного уменьшаем шрифт для компактности */
 }
 
 thead {
     background-color: #1f3544;
+    position: sticky;
+    top: 0;
+    z-index: 10;
 }
 
 thead th {
     color: var(--color-primary);
-    padding: var(--spacing-sm);
+    padding: var(--spacing-sm) var(--spacing-md);
     text-align: left;
     font-weight: 600;
     border-bottom: 2px solid var(--color-primary);
+    white-space: nowrap; /* Запрещаем перенос текста в заголовках */
+    font-size: var(--font-size-sm);
+    vertical-align: middle;
 }
 
 tbody tr {
@@ -225,22 +235,40 @@ tbody tr:hover {
 }
 
 tbody td {
-    padding: var(--spacing-sm);
+    padding: var(--spacing-sm) var(--spacing-md);
     color: var(--color-white);
+    white-space: nowrap; /* Запрещаем перенос в ячейках */
+    font-size: var(--font-size-sm);
 }
 
 tbody tr:nth-child(even) {
     background-color: transparent;
 }
 
+/* Для длинных текстовых полей разрешаем перенос */
+tbody td.text-wrap {
+    white-space: normal;
+    max-width: 300px;
+}
+
 .table-actions {
     display: flex;
     gap: var(--spacing-sm);
+    white-space: nowrap;
 }
 
 .table-actions .btn {
     padding: var(--spacing-xs) var(--spacing-sm);
     font-size: var(--font-size-sm);
+}
+
+/* Стили для кликабельных строк */
+.table-row-clickable {
+    cursor: pointer;
+}
+
+.table-row-clickable:hover {
+    background-color: rgba(218, 247, 220, 0.1) !important;
 }
 
 /* ========================================
@@ -279,6 +307,7 @@ tbody tr:nth-child(even) {
     align-items: center;
     gap: var(--spacing-sm);
     margin-top: var(--spacing-lg);
+    flex-wrap: wrap;
 }
 
 .pagination-btn {
@@ -289,6 +318,8 @@ tbody tr:nth-child(even) {
     border-radius: var(--radius-sm);
     cursor: pointer;
     transition: all var(--transition-fast);
+    min-width: 40px;
+    font-size: var(--font-size-sm);
 }
 
 .pagination-btn:hover:not(:disabled) {
@@ -313,6 +344,24 @@ tbody tr:nth-child(even) {
 .pagination-info {
     color: var(--color-neutral);
     font-size: var(--font-size-sm);
+    padding: 0 var(--spacing-sm);
+}
+
+.pagination-size-selector {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-sm);
+    color: var(--color-white);
+    font-size: var(--font-size-sm);
+}
+
+.pagination-size-selector select {
+    padding: var(--spacing-xs) var(--spacing-sm);
+    border: 2px solid var(--color-border);
+    border-radius: var(--radius-sm);
+    background-color: var(--color-bg-lighter);
+    color: var(--color-white);
+    cursor: pointer;
 }
 
 /* ========================================
@@ -422,6 +471,74 @@ tbody tr:nth-child(even) {
 
 .status-pending {
     background-color: var(--color-warning);
+}
+
+/* Бейджи для статусов */
+.status-badge {
+    display: inline-block;
+    padding: 4px 12px;
+    border-radius: var(--radius-sm);
+    font-size: var(--font-size-sm);
+    font-weight: 600;
+    white-space: nowrap;
+}
+
+.status-badge.открыт {
+    background-color: rgba(76, 175, 80, 0.2);
+    color: var(--color-success);
+    border: 1px solid var(--color-success);
+}
+
+.status-badge.закрыт {
+    background-color: rgba(158, 158, 158, 0.2);
+    color: var(--color-neutral);
+    border: 1px solid var(--color-neutral);
+}
+
+.status-badge.в-работе {
+    background-color: rgba(33, 150, 243, 0.2);
+    color: var(--color-info);
+    border: 1px solid var(--color-info);
+}
+
+.status-badge.завершена {
+    background-color: rgba(76, 175, 80, 0.2);
+    color: var(--color-success);
+    border: 1px solid var(--color-success);
+}
+
+.status-badge.отменена {
+    background-color: rgba(244, 67, 54, 0.2);
+    color: var(--color-error);
+    border: 1px solid var(--color-error);
+}
+
+/* Бейджи для счётчиков */
+.badge {
+    display: inline-block;
+    padding: 4px 10px;
+    border-radius: var(--radius-sm);
+    font-size: var(--font-size-sm);
+    font-weight: 600;
+    white-space: nowrap;
+}
+
+.badge-primary {
+    background-color: rgba(218, 247, 220, 0.2);
+    color: var(--color-primary);
+    border: 1px solid var(--color-primary);
+}
+
+.badge-secondary {
+    background-color: rgba(177, 156, 188, 0.2);
+    color: var(--color-accent);
+    border: 1px solid var(--color-accent);
+}
+
+.badge-info {
+    background-color: rgba(33, 150, 243, 0.2);
+    color: var(--color-info);
+    border: 1px solid var(--color-info);
 }
 
 /* ========================================
