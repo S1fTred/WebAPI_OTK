@@ -233,8 +233,10 @@ function createTable(columns, data, options = {}) {
             html += '<td><div class="table-actions">';
             rowActions.forEach(action => {
                 const disabled = action.disabled && action.disabled(row) ? 'disabled' : '';
+                const title = action.title ? `title="${action.title}"` : '';
                 html += `<button class="btn ${action.class || 'btn-sm btn-primary'}" 
                                 data-row-index="${index}"
+                                ${title}
                                 ${disabled}>
                             ${action.label}
                         </button>`;

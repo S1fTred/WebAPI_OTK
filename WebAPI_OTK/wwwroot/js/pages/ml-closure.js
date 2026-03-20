@@ -135,6 +135,11 @@ function initEventHandlers() {
     document.querySelector('#closeMlModal .modal-close').addEventListener('click', () => {
         hideModal('closeMlModal');
     });
+    
+    // Закрытие модального окна расчета
+    document.querySelector('#calculationModal .modal-close').addEventListener('click', () => {
+        hideModal('calculationModal');
+    });
 }
 
 // Обработка изменения типа поиска
@@ -509,6 +514,13 @@ function displayOperations(operations) {
     
     const rowActions = [
         {
+            label: '📊',
+            class: 'btn-sm btn-info',
+            title: 'Показать расчет',
+            handler: (index) => showCalculationDetails(operations[index]),
+            disabled: () => false
+        },
+        {
             label: 'Завершить',
             class: 'btn-sm btn-success',
             handler: (index) => finishOperation(operations[index]),
@@ -682,6 +694,100 @@ function backToList() {
     currentMl = null;
     currentOperations = [];
     filteredOperations = [];
+}
+
+// Показать детали расчета операции
+async function showCalculationDetails(operation) {
+    try {
+        const calculation = await operationApi.getCalculation(operation.id);
+        
+        const content = document.getElementById('calculationContent');
+        
+        let html = '<div class="calculation-details">';
+        
+        // Входные данные
+        html += '<div class="calculation-section">';
+        html += '<h3>Входные данные</h3>';
+        html += '<div class="calculation-grid">';
+        html += `<div class="calc-item"><span class="calc-label">Количество:</span><span class="calc-value">${calculation.входныеДанные.количество || 0}</span></div>`;
+        html += `<div class="calc-item"><span class="calc-label">Норма времени (ч):</span><span class="calc-value">${formatNumber(calculation.входныеДанные.нормаВремениЧас, 2)}</span></div>`;
+        html += `<div class="calc-item"><span class="calc-label">Цена за час (₽/ч):</span><span class="calc-value">${formatNumber(calculation.входныеДанные.ценаЗаЧас, 2)}</span></div>`;
+        html += `<div class="calc-item"><span class="calc-label">Коэффициент сделки:</span><span class="calc-value">${formatNumber(calculation.входныеДанные.коэффициентСделки, 2)}</span></div>`;
+        html += `<div class="calc-item"><span class="calc-label">Дата исполнения:</span><span class="calc-value">${formatDateTime(calculation.входныеДанные.датаИсполнения)}</span></div>`;
+        html += `<div class="calc-item"><span class="calc-label">Дата закрытия:</span><span class="calc-value">${formatDateTime(calculation.входныеДанные.датаЗакрытия)}</span></div>`;
+        html += `<div class="calc-item"><span class="calc-label">Выполнено в срок:</span><span class="calc-value">${calculation.входныеДанные.вСрок ? 'Да ✓' : 'Нет ✗'}</span></div>`;
+        html += '</div>';
+        html += '</div>';
+        
+        // Источник коэффициента сделки
+        if (calculation.источникКоэффициентаСделки) {
+            html += '<div class="calculation-section">';
+            html += '<h3>Источник коэффициента сделки</h3>';
+            
+            if (calculation.источникКоэффициентаСделки.найден) {
+                html += '<div class="calculation-grid">';
+                html += `<div class="calc-item"><span class="calc-label">Изделие:</span><span class="calc-value">${calculation.источникКоэффициентаСделки.изделие || '-'}</span></div>`;
+                html += `<div class="calc-item"><span class="calc-label">ДСЕ:</span><span class="calc-value">${calculation.источникКоэффициентаСделки.дсе || '-'}</span></div>`;
+                html += `<div class="calc-item"><span class="calc-label">Тип операции:</span><span class="calc-value">${calculation.источникКоэффициентаСделки.типОперации || '-'}</span></div>`;
+                html += `<div class="calc-item"><span class="calc-label">Коэффициент:</span><span class="calc-value">${formatNumber(calculation.источникКоэффициентаСделки.коэффициент, 2)}</span></div>`;
+                html += `<div class="calc-item"><span class="calc-label">Период действия:</span><span class="calc-value">${formatDate(calculation.источникКоэффициентаСделки.датаНачала)} - ${formatDate(calculation.источникКоэффициентаСделки.датаОкончания) || 'бессрочно'}</span></div>`;
+                html += '</div>';
+            } else {
+                html += '<p class="text-muted">Премиальный коэффициент не найден. Используется значение по умолчанию: 1.0</p>';
+            }
+            
+            html += '</div>';
+        }
+        
+        // Формулы и расчеты
+        html += '<div class="calculation-section">';
+        html += '<h3>Формулы расчета</h3>';
+        
+        // 1. Базовая сумма
+        html += '<div class="formula-block">';
+        html += '<div class="formula-title">1. Базовая сумма</div>';
+        html += `<div class="formula-text">${calculation.формулы.базоваяСумма}</div>`;
+        html += `<div class="formula-calc">${calculation.входныеДанные.количество} × ${formatNumber(calculation.входныеДанные.нормаВремениЧас, 2)} × ${formatNumber(calculation.входныеДанные.ценаЗаЧас, 2)} = <strong>${formatNumber(calculation.результаты.базоваяСумма, 2)} ₽</strong></div>`;
+        html += '</div>';
+        
+        // 2. Сумма надбавки
+        html += '<div class="formula-block">';
+        html += '<div class="formula-title">2. Сумма надбавки</div>';
+        html += `<div class="formula-text">${calculation.формулы.суммаНадбавки}</div>`;
+        html += `<div class="formula-calc">(${formatNumber(calculation.входныеДанные.коэффициентСделки, 2)} - 1) × ${formatNumber(calculation.результаты.базоваяСумма, 2)} = <strong>${formatNumber(calculation.результаты.суммаНадбавки, 2)} ₽</strong></div>`;
+        html += '</div>';
+        
+        // 3. Коэффициент премии
+        html += '<div class="formula-block">';
+        html += '<div class="formula-title">3. Коэффициент премии</div>';
+        html += `<div class="formula-text">${calculation.формулы.коэффициентПремии}</div>`;
+        html += `<div class="formula-calc">Операция выполнена ${calculation.входныеДанные.вСрок ? '<strong>в срок</strong>' : '<strong>с просрочкой</strong>'} → Коэффициент = <strong>${formatNumber(calculation.результаты.коэффициентПремии, 2)}</strong></div>`;
+        html += '</div>';
+        
+        // 4. Сумма премии
+        html += '<div class="formula-block">';
+        html += '<div class="formula-title">4. Сумма премии</div>';
+        html += `<div class="formula-text">${calculation.формулы.суммаПремии}</div>`;
+        html += `<div class="formula-calc">${formatNumber(calculation.результаты.коэффициентПремии, 2)} × (${formatNumber(calculation.результаты.суммаНадбавки, 2)} + ${formatNumber(calculation.результаты.базоваяСумма, 2)}) = <strong>${formatNumber(calculation.результаты.суммаПремии, 2)} ₽</strong></div>`;
+        html += '</div>';
+        
+        // 5. Итого
+        html += '<div class="formula-block formula-total">';
+        html += '<div class="formula-title">5. Итоговая сумма</div>';
+        html += `<div class="formula-text">${calculation.формулы.итого}</div>`;
+        html += `<div class="formula-calc">${formatNumber(calculation.результаты.базоваяСумма, 2)} + ${formatNumber(calculation.результаты.суммаНадбавки, 2)} + ${formatNumber(calculation.результаты.суммаПремии, 2)} = <strong>${formatNumber(calculation.результаты.итого, 2)} ₽</strong></div>`;
+        html += '</div>';
+        
+        html += '</div>';
+        html += '</div>';
+        
+        content.innerHTML = html;
+        showModal('calculationModal');
+        
+    } catch (error) {
+        console.error('Ошибка загрузки расчета:', error);
+        showToast('Ошибка при загрузке деталей расчета', 'error');
+    }
 }
 
 // Экспорт функций в глобальную область для использования в HTML

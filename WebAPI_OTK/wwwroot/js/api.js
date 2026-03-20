@@ -161,6 +161,9 @@ const operationApi = {
     // Получить операции сотрудника
     getByEmployee: (employeeId) => api.get(`/OperationRouteList/employee/${employeeId}`),
     
+    // Получить детали расчета операции
+    getCalculation: (id) => api.get(`/OperationRouteList/calculation/${id}`),
+    
     // Создать операцию
     create: (data) => api.post('/OperationRouteList', data),
     
