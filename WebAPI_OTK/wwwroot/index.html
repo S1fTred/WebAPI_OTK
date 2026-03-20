@@ -14,14 +14,18 @@
             <div class="header-content">
                 <h1 class="logo">Система ОТК</h1>
                 <nav class="nav">
-                    <a href="/index.html" class="nav-link active">Главная</a>
-                    <a href="/pages/ml-closure.html" class="nav-link">Закрытие МЛ</a>
-                    <a href="/pages/prem-koef.html" class="nav-link">Премиальные коэффициенты</a>
-                    <a href="/pages/dce-catalog.html" class="nav-link">Каталог ДСЕ</a>
+                    <a href="/index.html" class="nav-link active" data-i18n="nav.home">Главная</a>
+                    <a href="/pages/ml-closure.html" class="nav-link" data-i18n="nav.mlClosure">Закрытие МЛ</a>
+                    <a href="/pages/prem-koef.html" class="nav-link" data-i18n="nav.premKoef">Премиальные коэффициенты</a>
+                    <a href="/pages/dce-catalog.html" class="nav-link" data-i18n="nav.dceCatalog">Каталог ДСЕ</a>
                 </nav>
                 <div class="user-info" id="userInfoBlock" style="display: none;">
+                    <div class="language-switcher">
+                        <button id="langRu" class="lang-btn active" onclick="setLanguage('ru')" title="Русский">RU</button>
+                        <button id="langEn" class="lang-btn" onclick="setLanguage('en')" title="English">EN</button>
+                    </div>
                     <span class="user-name" id="userName">Пользователь</span>
-                    <button id="logoutBtn" class="btn btn-sm btn-secondary">Выйти</button>
+                    <button id="logoutBtn" class="btn btn-sm btn-secondary" data-i18n="nav.logout">Выйти</button>
                 </div>
             </div>
         </header>
@@ -29,25 +33,25 @@
         <!-- Основной контент -->
         <main class="main-content">
             <div class="welcome-section">
-                <h2>Добро пожаловать в систему учета ОТК</h2>
+                <h2 data-i18n="home.welcome">Добро пожаловать в систему учета ОТК</h2>
 
                 <div class="cards-grid">
                     <!-- Карточка: Закрытие МЛ -->
                     <div class="card card-clickable" onclick="location.href='/pages/ml-closure.html'">
-                        <h3>Закрытие МЛ</h3>
-                        <p>Поиск и закрытие маршрутных листов и операций</p>
+                        <h3 data-i18n="home.mlClosureTitle">Закрытие МЛ</h3>
+                        <p data-i18n="home.mlClosureDesc">Поиск и закрытие маршрутных листов и операций</p>
                     </div>
 
                     <!-- Карточка: Премиальные коэффициенты -->
                     <div class="card card-clickable" onclick="location.href='/pages/prem-koef.html'">
-                        <h3>Премиальные коэффициенты</h3>
-                        <p>Управление коэффициентами премирования</p>
+                        <h3 data-i18n="home.premKoefTitle">Премиальные коэффициенты</h3>
+                        <p data-i18n="home.premKoefDesc">Управление коэффициентами премирования</p>
                     </div>
 
                     <!-- Карточка: Каталог ДСЕ -->
                     <div class="card card-clickable" onclick="location.href='/pages/dce-catalog.html'">
-                        <h3>Каталог ДСЕ</h3>
-                        <p>Просмотр деталей и сборочных единиц</p>
+                        <h3 data-i18n="home.dceCatalogTitle">Каталог ДСЕ</h3>
+                        <p data-i18n="home.dceCatalogDesc">Просмотр деталей и сборочных единиц</p>
                     </div>
                 </div>
             </div>
@@ -56,18 +60,18 @@
     <!-- Модальное окно для авторизации -->
     <div id="authModal" class="modal">
         <div class="modal-content">
-            <h2>Вход в систему</h2>
+            <h2 data-i18n="modal.auth.title">Вход в систему</h2>
             <form id="loginForm">
                 <div class="form-group">
-                    <label for="username">Логин</label>
+                    <label for="username" data-i18n="modal.auth.username">Логин</label>
                     <input type="text" id="username" name="username" required>
                 </div>
                 <div class="form-group">
-                    <label for="password">Пароль</label>
+                    <label for="password" data-i18n="modal.auth.password">Пароль</label>
                     <input type="password" id="password" name="password" required>
                 </div>
                 <div class="form-actions">
-                    <button type="submit" class="btn btn-primary">Войти</button>
+                    <button type="submit" class="btn btn-primary" data-i18n="modal.auth.loginBtn">Войти</button>
                 </div>
             </form>
             <p class="auth-link">
@@ -77,6 +81,7 @@
     </div>
 
     <script src="/js/utils.js"></script>
+    <script src="/js/i18n.js"></script>
     <script src="/js/api.js"></script>
     <script src="/js/components.js"></script>
     <script>

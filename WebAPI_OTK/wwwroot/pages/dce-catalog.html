@@ -15,14 +15,18 @@
             <div class="header-content">
                 <h1 class="logo">Система ОТК</h1>
                 <nav class="nav">
-                    <a href="/index.html" class="nav-link">Главная</a>
-                    <a href="/pages/ml-closure.html" class="nav-link">Закрытие МЛ</a>
-                    <a href="/pages/prem-koef.html" class="nav-link">Премиальные коэффициенты</a>
-                    <a href="/pages/dce-catalog.html" class="nav-link active">Каталог ДСЕ</a>
+                    <a href="/index.html" class="nav-link" data-i18n="nav.home">Главная</a>
+                    <a href="/pages/ml-closure.html" class="nav-link" data-i18n="nav.mlClosure">Закрытие МЛ</a>
+                    <a href="/pages/prem-koef.html" class="nav-link" data-i18n="nav.premKoef">Премиальные коэффициенты</a>
+                    <a href="/pages/dce-catalog.html" class="nav-link active" data-i18n="nav.dceCatalog">Каталог ДСЕ</a>
                 </nav>
                 <div class="user-info" id="userInfoBlock" style="display: none;">
+                    <div class="language-switcher">
+                        <button id="langRu" class="lang-btn active" onclick="setLanguage('ru')" title="Русский">RU</button>
+                        <button id="langEn" class="lang-btn" onclick="setLanguage('en')" title="English">EN</button>
+                    </div>
                     <span class="user-name" id="userName">Пользователь</span>
-                    <button id="logoutBtn" class="btn btn-sm btn-secondary">Выйти</button>
+                    <button id="logoutBtn" class="btn btn-sm btn-secondary" data-i18n="nav.logout">Выйти</button>
                 </div>
             </div>
         </header>
@@ -30,24 +34,24 @@
         <!-- Основной контент -->
         <main class="main-content">
             <div class="page-header">
-                <h2>Каталог ДСЕ</h2>
+                <h2 data-i18n="dceCatalog.title">Каталог ДСЕ</h2>
             </div>
 
             <!-- Панель поиска и фильтров -->
             <div class="search-bar">
                 <div class="form-row">
                     <div class="form-group">
-                        <label for="searchInput">Поиск по коду или наименованию</label>
-                        <input type="text" id="searchInput" placeholder="Введите код или название...">
+                        <label for="searchInput" data-i18n="dceCatalog.searchByCodeOrName">Поиск по коду или наименованию</label>
+                        <input type="text" id="searchInput" data-i18n-placeholder="dceCatalog.searchPlaceholder" placeholder="Введите код или название...">
                     </div>
                     <div class="form-group">
-                        <label for="productFilter">Изделие</label>
+                        <label for="productFilter" data-i18n="dceCatalog.product">Изделие</label>
                         <select id="productFilter">
-                            <option value="">Все изделия</option>
+                            <option value="" data-i18n="dceCatalog.allProducts">Все изделия</option>
                         </select>
                     </div>
                     <div class="form-group">
-                        <label for="pageSizeSelect">Записей на странице</label>
+                        <label for="pageSizeSelect" data-i18n="dceCatalog.recordsPerPage">Записей на странице</label>
                         <select id="pageSizeSelect">
                             <option value="10">10</option>
                             <option value="20">20</option>
@@ -57,14 +61,14 @@
                     </div>
                     <div class="form-group">
                         <label>&nbsp;</label>
-                        <button id="resetFiltersBtn" class="btn btn-secondary btn-block">Сбросить</button>
+                        <button id="resetFiltersBtn" class="btn btn-secondary btn-block" data-i18n="dceCatalog.reset">Сбросить</button>
                     </div>
                 </div>
             </div>
 
             <!-- Информация о пагинации -->
             <div class="pagination-info">
-                <span id="recordsInfo">Загрузка...</span>
+                <span id="recordsInfo" data-i18n="dceCatalog.loading">Загрузка...</span>
             </div>
 
             <!-- Таблица ДСЕ -->
@@ -72,10 +76,10 @@
                 <table class="data-table">
                     <thead>
                         <tr>
-                            <th>Код</th>
-                            <th>Наименование</th>
-                            <th>Изделие</th>
-                            <th>Действия</th>
+                            <th data-i18n="dceCatalog.code">Код</th>
+                            <th data-i18n="dceCatalog.name">Наименование</th>
+                            <th data-i18n="dceCatalog.product">Изделие</th>
+                            <th data-i18n="dceCatalog.actions">Действия</th>
                         </tr>
                     </thead>
                     <tbody id="dceTableBody">
@@ -95,7 +99,7 @@
     <div id="dceModal" class="modal">
         <div class="modal-content">
             <span class="modal-close">&times;</span>
-            <h2>Детали ДСЕ</h2>
+            <h2 data-i18n="dceCatalog.modalTitle">Детали ДСЕ</h2>
             <div id="dceDetails">
                 <!-- Детали будут загружены через JS -->
             </div>
@@ -105,24 +109,25 @@
     <!-- Модальное окно для авторизации -->
     <div id="authModal" class="modal">
         <div class="modal-content">
-            <h2>Вход в систему</h2>
+            <h2 data-i18n="modal.auth.title">Вход в систему</h2>
             <form id="loginForm">
                 <div class="form-group">
-                    <label for="username">Логин</label>
+                    <label for="username" data-i18n="modal.auth.username">Логин</label>
                     <input type="text" id="username" name="username" required>
                 </div>
                 <div class="form-group">
-                    <label for="password">Пароль</label>
+                    <label for="password" data-i18n="modal.auth.password">Пароль</label>
                     <input type="password" id="password" name="password" required>
                 </div>
                 <div class="form-actions">
-                    <button type="submit" class="btn btn-primary">Войти</button>
+                    <button type="submit" class="btn btn-primary" data-i18n="modal.auth.loginBtn">Войти</button>
                 </div>
             </form>
         </div>
     </div>
 
     <script src="/js/utils.js"></script>
+    <script src="/js/i18n.js"></script>
     <script src="/js/api.js"></script>
     <script src="/js/components.js"></script>
     <script src="/js/pages/dce-catalog.js"></script>

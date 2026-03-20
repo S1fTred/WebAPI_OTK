@@ -569,3 +569,37 @@ textarea:focus {
         max-width: 95%;
     }
 }
+
+/* ========================================
+   LANGUAGE SWITCHER
+   ======================================== */
+
+.language-switcher {
+    display: flex;
+    gap: 4px;
+    background-color: var(--color-bg-lighter);
+    border-radius: var(--radius-sm);
+    padding: 2px;
+}
+
+.lang-btn {
+    background: transparent;
+    border: none;
+    color: var(--color-neutral);
+    padding: 4px 8px;
+    border-radius: var(--radius-sm);
+    cursor: pointer;
+    font-size: var(--font-size-sm);
+    font-weight: 600;
+    transition: all var(--transition-fast);
+}
+
+.lang-btn:hover {
+    color: var(--color-white);
+    background-color: rgba(255, 255, 255, 0.1);
+}
+
+.lang-btn.active {
+    background-color: var(--color-primary);
+    color: var(--color-dark);
+}

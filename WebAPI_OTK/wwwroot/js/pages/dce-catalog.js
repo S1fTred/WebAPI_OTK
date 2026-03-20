@@ -8,6 +8,7 @@ let pageSize = 10; // Уменьшено для демонстрации паг�
 let totalRecords = 0;
 let totalPages = 0;
 let products = [];
+let currentDceList = []; // Текущий список ДСЕ для обновления при смене языка
 let currentFilters = {
     поиск: '',
     изделиеID: null
@@ -41,20 +42,25 @@ async function loadReferenceData() {
         products = await productApi.getAll();
         
         // Заполнение селекта изделий
-        const productFilter = document.getElementById('productFilter');
-        productFilter.innerHTML = '<option value="">Все изделия</option>';
-        
-        products.forEach(product => {
-            const option = document.createElement('option');
-            option.value = product.id;
-            option.textContent = product.наименование;
-            productFilter.appendChild(option);
-        });
+        populateProductSelect();
         
     } catch (error) {
         console.error('Ошибка загрузки справочников:', error);
-        showToast('Ошибка загрузки справочных данных', 'error');
+        showToast(t('message.errorLoadingReferenceData'), 'error');
     }
+}
+
+// Заполнение селекта изделий
+function populateProductSelect() {
+    const productFilter = document.getElementById('productFilter');
+    productFilter.innerHTML = `<option value="">${t('dceCatalog.allProducts')}</option>`;
+    
+    products.forEach(product => {
+        const option = document.createElement('option');
+        option.value = product.id;
+        option.textContent = product.наименование;
+        productFilter.appendChild(option);
+    });
 }
 
 // ========================================
@@ -114,14 +120,15 @@ async function loadDCE() {
         
         totalRecords = response.всегоЗаписей;
         totalPages = response.всегоСтраниц;
+        currentDceList = response.данные; // Сохраняем для обновления при смене языка
         
-        displayDCE(response.данные);
+        displayDCE(currentDceList);
         updatePaginationInfo();
         renderPagination();
         
     } catch (error) {
         console.error('Ошибка загрузки ДСЕ:', error);
-        showToast('Ошибка загрузки каталога ДСЕ', 'error');
+        showToast(t('message.errorLoadingDceList'), 'error');
     }
 }
 
@@ -159,8 +166,8 @@ function displayDCE(dceList) {
             <tr>
                 <td colspan="4" class="empty-state">
                     <div class="empty-state-icon">📦</div>
-                    <h3>ДСЕ не найдены</h3>
-                    <p>Попробуйте изменить параметры поиска</p>
+                    <h3>${t('dceCatalog.notFound')}</h3>
+                    <p>${t('dceCatalog.tryChangeSearch')}</p>
                 </td>
             </tr>
         `;
@@ -177,7 +184,7 @@ function displayDCE(dceList) {
                 <td>${escapeHtml(dce.изделие || '-')}</td>
                 <td>
                     <button class="btn btn-sm btn-primary" onclick="showDCEDetails(${dce.id})">
-                        👁️ Подробнее
+                        ${t('dceCatalog.details')}
                     </button>
                 </td>
             </tr>
@@ -193,7 +200,7 @@ function updatePaginationInfo() {
     const start = (currentPage - 1) * pageSize + 1;
     const end = Math.min(currentPage * pageSize, totalRecords);
     
-    recordsInfo.textContent = `Показано ${start}-${end} из ${totalRecords} записей`;
+    recordsInfo.textContent = `${t('pagination.showing')} ${start}-${end} ${t('pagination.of')} ${totalRecords}`;
 }
 
 // Отрисовка пагинации
@@ -211,7 +218,7 @@ function renderPagination() {
     html += `
         <button class="pagination-btn" ${currentPage === 1 ? 'disabled' : ''} 
                 onclick="changePage(${currentPage - 1})">
-            ← Предыдущая
+            ${t('pagination.previous')}
         </button>
     `;
     
@@ -251,7 +258,7 @@ function renderPagination() {
     html += `
         <button class="pagination-btn" ${currentPage === totalPages ? 'disabled' : ''} 
                 onclick="changePage(${currentPage + 1})">
-            Следующая →
+            ${t('pagination.nextFull')}
         </button>
     `;
     
@@ -280,19 +287,19 @@ async function showDCEDetails(id) {
         const detailsHtml = `
             <div class="info-grid">
                 <div class="info-item">
-                    <span class="info-label">Код:</span>
+                    <span class="info-label">${t('dceCatalog.code')}:</span>
                     <span class="info-value"><strong>${escapeHtml(dce.код)}</strong></span>
                 </div>
                 <div class="info-item">
-                    <span class="info-label">Наименование:</span>
+                    <span class="info-label">${t('dceCatalog.name')}:</span>
                     <span class="info-value">${escapeHtml(dce.наименование || '-')}</span>
                 </div>
                 <div class="info-item">
-                    <span class="info-label">Изделие:</span>
+                    <span class="info-label">${t('dceCatalog.product')}:</span>
                     <span class="info-value">${escapeHtml(dce.изделие || '-')}</span>
                 </div>
                 <div class="info-item">
-                    <span class="info-label">ID:</span>
+                    <span class="info-label">${t('dceCatalog.id')}:</span>
                     <span class="info-value">${dce.id}</span>
                 </div>
             </div>
@@ -303,10 +310,18 @@ async function showDCEDetails(id) {
         
     } catch (error) {
         console.error('Ошибка загрузки деталей ДСЕ:', error);
-        showToast('Ошибка загрузки деталей', 'error');
+        showToast(t('message.errorLoadingDceDetails'), 'error');
     }
 }
 
 // Экспорт функций в глобальную область для использования в HTML
 window.changePage = changePage;
 window.showDCEDetails = showDCEDetails;
+
+// Обработчик смены языка
+document.addEventListener('languageChanged', () => {
+    populateProductSelect();
+    displayDCE(currentDceList);
+    updatePaginationInfo();
+    renderPagination();
+});

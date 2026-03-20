@@ -55,7 +55,7 @@ async function loadReferenceData() {
         
     } catch (error) {
         console.error('Критическая ошибка загрузки справочников:', error);
-        showToast('Не удалось подключиться к серверу. Проверьте, что сервер запущен.', 'error');
+        showToast(t('message.serverError'), 'error');
     }
 }
 
@@ -63,11 +63,11 @@ async function loadReferenceData() {
 function populateSelects() {
     // Фильтр изделий
     const productFilter = document.getElementById('productFilter');
-    productFilter.innerHTML = '<option value="">Все изделия</option>';
+    productFilter.innerHTML = `<option value="">${t('premKoef.allProducts')}</option>`;
     
     // Форма - изделие
     const koefProduct = document.getElementById('koefProduct');
-    koefProduct.innerHTML = '<option value="">Не указано (для всех)</option>';
+    koefProduct.innerHTML = `<option value="">${t('modal.koef.productNotSpecified')}</option>`;
     
     products.forEach(product => {
         const option1 = document.createElement('option');
@@ -83,11 +83,11 @@ function populateSelects() {
     
     // Фильтр типов операций
     const operationTypeFilter = document.getElementById('operationTypeFilter');
-    operationTypeFilter.innerHTML = '<option value="">Все типы</option>';
+    operationTypeFilter.innerHTML = `<option value="">${t('premKoef.allTypes')}</option>`;
     
     // Форма - тип операции
     const koefOperationType = document.getElementById('koefOperationType');
-    koefOperationType.innerHTML = '<option value="">Не указано (для всех)</option>';
+    koefOperationType.innerHTML = `<option value="">${t('modal.koef.operationTypeNotSpecified')}</option>`;
     
     operationTypes.forEach(type => {
         const option1 = document.createElement('option');
@@ -140,7 +140,7 @@ async function handleProductChangeInForm(e) {
     const productId = e.target.value;
     const dceSelect = document.getElementById('koefDce');
     
-    dceSelect.innerHTML = '<option value="">Не указано (для всех)</option>';
+    dceSelect.innerHTML = `<option value="">${t('modal.koef.dceNotSpecified')}</option>`;
     
     if (!productId) return;
     
@@ -169,7 +169,7 @@ async function loadKoefs() {
         updateStatistics();
     } catch (error) {
         console.error('Ошибка загрузки коэффициентов:', error);
-        showToast('Ошибка загрузки коэффициентов', 'error');
+        showToast(t('message.errorLoadingKoefs'), 'error');
     }
 }
 
@@ -241,8 +241,8 @@ function displayKoefs(koefs) {
         container.innerHTML = `
             <div class="empty-state">
                 <div class="empty-state-icon">💰</div>
-                <h3>Коэффициенты не найдены</h3>
-                <p>Попробуйте изменить параметры фильтрации или добавьте новый коэффициент</p>
+                <h3>${t('premKoef.notFound')}</h3>
+                <p>${t('premKoef.tryChangeFilters')}</p>
             </div>
         `;
         return;
@@ -254,8 +254,8 @@ function displayKoefs(koefs) {
         const isActive = koef.активный;
         const cardClass = isActive ? '' : 'inactive';
         const statusBadge = isActive 
-            ? '<span class="badge badge-success">Активный</span>'
-            : '<span class="badge badge-error">Неактивный</span>';
+            ? `<span class="badge badge-success">${t('premKoef.statusActive')}</span>`
+            : `<span class="badge badge-error">${t('premKoef.statusInactive')}</span>`;
         
         html += `
             <div class="koef-card ${cardClass}">
@@ -269,37 +269,37 @@ function displayKoefs(koefs) {
                 
                 <div class="koef-card-body">
                     <div class="info-item">
-                        <span class="info-label">Период действия:</span>
+                        <span class="info-label">${t('premKoef.validPeriod')}:</span>
                         <span class="info-value">
-                            ${formatDate(koef.датаНачала)} - ${koef.датаОкончания ? formatDate(koef.датаОкончания) : 'Бессрочно'}
+                            ${formatDate(koef.датаНачала)} - ${koef.датаОкончания ? formatDate(koef.датаОкончания) : t('premKoef.indefinite')}
                         </span>
                     </div>
                     <div class="info-item">
-                        <span class="info-label">Изделие:</span>
-                        <span class="info-value">${koef.изделие || 'Все'}</span>
+                        <span class="info-label">${t('premKoef.product')}:</span>
+                        <span class="info-value">${koef.изделие || t('premKoef.all')}</span>
                     </div>
                     <div class="info-item">
-                        <span class="info-label">ДСЕ:</span>
-                        <span class="info-value">${koef.дсе || 'Все'}</span>
+                        <span class="info-label">${t('premKoef.dce')}:</span>
+                        <span class="info-value">${koef.дсе || t('premKoef.all')}</span>
                     </div>
                     <div class="info-item">
-                        <span class="info-label">Тип операции:</span>
-                        <span class="info-value">${koef.типОперации || 'Все'}</span>
+                        <span class="info-label">${t('premKoef.operationType')}:</span>
+                        <span class="info-value">${koef.типОперации || t('premKoef.all')}</span>
                     </div>
                 </div>
                 
                 <div class="koef-card-footer">
                     <div class="record-actions">
                         <button class="btn btn-sm btn-primary" onclick="editKoef(${koef.id})">
-                            ✏️ Редактировать
+                            ${t('premKoef.edit')}
                         </button>
                         ${isActive ? `
                             <button class="btn btn-sm btn-warning" onclick="deactivateKoef(${koef.id})">
-                                ⏸ Деактивировать
+                                ${t('premKoef.deactivate')}
                             </button>
                         ` : `
                             <button class="btn btn-sm btn-danger" onclick="deleteKoef(${koef.id})">
-                                🗑️ Удалить
+                                ${t('premKoef.delete')}
                             </button>
                         `}
                     </div>
@@ -335,7 +335,8 @@ function openKoefModal(koef = null) {
     
     if (koef) {
         // Редактирование
-        title.textContent = 'Редактировать коэффициент';
+        title.textContent = t('modal.koef.titleEdit');
+        title.setAttribute('data-i18n', 'modal.koef.titleEdit');
         document.getElementById('koefId').value = koef.id;
         document.getElementById('koefName').value = koef.наименование;
         document.getElementById('koefValue').value = koef.коэффициент;
@@ -354,7 +355,8 @@ function openKoefModal(koef = null) {
         }
     } else {
         // Создание
-        title.textContent = 'Добавить коэффициент';
+        title.textContent = t('modal.koef.titleAdd');
+        title.setAttribute('data-i18n', 'modal.koef.titleAdd');
         form.reset();
         document.getElementById('koefId').value = '';
         // Установка текущей даты по умолчанию
@@ -371,7 +373,7 @@ async function editKoef(id) {
         openKoefModal(koef);
     } catch (error) {
         console.error('Ошибка загрузки коэффициента:', error);
-        showToast('Ошибка загрузки данных коэффициента', 'error');
+        showToast(t('message.errorLoadingKoef'), 'error');
     }
 }
 
@@ -394,11 +396,11 @@ async function handleSaveKoef(e) {
         if (id) {
             // Обновление
             await premKoefApi.update(parseInt(id), data);
-            showToast('Коэффициент успешно обновлен', 'success');
+            showToast(t('message.koefUpdated'), 'success');
         } else {
             // Создание
             await premKoefApi.create(data);
-            showToast('Коэффициент успешно создан', 'success');
+            showToast(t('message.koefCreated'), 'success');
         }
         
         hideModal('koefModal');
@@ -406,22 +408,22 @@ async function handleSaveKoef(e) {
         
     } catch (error) {
         console.error('Ошибка сохранения коэффициента:', error);
-        showToast(error.message || 'Ошибка при сохранении коэффициента', 'error');
+        showToast(error.message || t('message.errorSavingKoef'), 'error');
     }
 }
 
 // Деактивация коэффициента
 async function deactivateKoef(id) {
     confirmDialog(
-        'Деактивировать коэффициент? Он перестанет действовать с текущей даты.',
+        t('confirm.deactivateKoef'),
         async () => {
             try {
                 await premKoefApi.deactivate(id);
-                showToast('Коэффициент успешно деактивирован', 'success');
+                showToast(t('message.koefDeactivated'), 'success');
                 await loadKoefs();
             } catch (error) {
                 console.error('Ошибка деактивации коэффициента:', error);
-                showToast(error.message || 'Ошибка при деактивации коэффициента', 'error');
+                showToast(error.message || t('message.errorDeactivatingKoef'), 'error');
             }
         }
     );
@@ -430,15 +432,15 @@ async function deactivateKoef(id) {
 // Удаление коэффициента
 async function deleteKoef(id) {
     confirmDialog(
-        'Удалить коэффициент? Это действие нельзя отменить.',
+        t('confirm.deleteKoef'),
         async () => {
             try {
                 await premKoefApi.delete(id);
-                showToast('Коэффициент успешно удален', 'success');
+                showToast(t('message.koefDeleted'), 'success');
                 await loadKoefs();
             } catch (error) {
                 console.error('Ошибка удаления коэффициента:', error);
-                showToast(error.message || 'Ошибка при удалении коэффициента', 'error');
+                showToast(error.message || t('message.errorDeletingKoef'), 'error');
             }
         }
     );
@@ -448,3 +450,10 @@ async function deleteKoef(id) {
 window.editKoef = editKoef;
 window.deactivateKoef = deactivateKoef;
 window.deleteKoef = deleteKoef;
+
+// Обработчик смены языка
+document.addEventListener('languageChanged', () => {
+    populateSelects();
+    displayKoefs(filteredKoefs);
+    updateStatistics();
+});

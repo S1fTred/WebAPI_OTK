@@ -21,16 +21,19 @@ function showToast(message, type = 'info', duration = 3000) {
     const toast = document.createElement('div');
     toast.className = `toast ${type}`;
     
+    // Используем функцию t() если она доступна, иначе fallback на русский
+    const getTitle = (key, fallback) => typeof t === 'function' ? t(key) : fallback;
+    
     const titles = {
-        success: 'Успешно',
-        error: 'Ошибка',
-        warning: 'Внимание',
-        info: 'Информация'
+        success: getTitle('toast.success', 'Успешно'),
+        error: getTitle('toast.error', 'Ошибка'),
+        warning: getTitle('toast.warning', 'Внимание'),
+        info: getTitle('toast.info', 'Информация')
     };
     
     toast.innerHTML = `
         <div class="toast-header">
-            <span class="toast-title">${titles[type] || 'Уведомление'}</span>
+            <span class="toast-title">${titles[type] || getTitle('toast.notification', 'Уведомление')}</span>
             <button class="toast-close">&times;</button>
         </div>
         <div class="toast-body">${escapeHtml(message)}</div>
@@ -151,12 +154,15 @@ function createModal(title, content, actions = []) {
 
 // Диалог подтверждения
 function confirmDialog(message, onConfirm, onCancel = null) {
+    // Используем функцию t() если она доступна, иначе fallback на русский
+    const getTranslation = (key, fallback) => typeof t === 'function' ? t(key) : fallback;
+    
     const modalId = createModal(
-        'Подтверждение',
+        getTranslation('confirm.title', 'Подтверждение'),
         `<p>${escapeHtml(message)}</p>`,
         [
             {
-                label: 'Отмена',
+                label: getTranslation('confirm.no', 'Отмена'),
                 class: 'btn-secondary',
                 action: 'cancel',
                 handler: (modal, id) => {
@@ -166,7 +172,7 @@ function confirmDialog(message, onConfirm, onCancel = null) {
                 }
             },
             {
-                label: 'Подтвердить',
+                label: getTranslation('confirm.yes', 'Подтвердить'),
                 class: 'btn-primary',
                 action: 'confirm',
                 handler: (modal, id) => {
@@ -334,7 +340,8 @@ function checkAuth() {
 
 // Выход из системы
 function logout() {
-    confirmDialog('Вы уверены, что хотите выйти?', () => {
+    const getTranslation = (key, fallback) => typeof t === 'function' ? t(key) : fallback;
+    confirmDialog(getTranslation('message.logoutConfirm', 'Вы уверены, что хотите выйти?'), () => {
         authApi.logout();
     });
 }
@@ -354,7 +361,8 @@ document.addEventListener('DOMContentLoaded', () => {
                 
                 if (result.success) {
                     hideModal('authModal');
-                    showToast('Вход выполнен успешно', 'success');
+                    const getTranslation = (key, fallback) => typeof t === 'function' ? t(key) : fallback;
+                    showToast(getTranslation('message.loginSuccess', 'Вход выполнен успешно'), 'success');
                     
                     // Обновить имя пользователя
                     const userNameElement = document.getElementById('userName');
@@ -373,10 +381,12 @@ document.addEventListener('DOMContentLoaded', () => {
                         location.reload();
                     }
                 } else {
-                    showToast(result.message || 'Ошибка входа', 'error');
+                    const getTranslation = (key, fallback) => typeof t === 'function' ? t(key) : fallback;
+                    showToast(result.message || getTranslation('message.loginError', 'Ошибка входа'), 'error');
                 }
             } catch (error) {
-                showToast('Ошибка при входе в систему', 'error');
+                const getTranslation = (key, fallback) => typeof t === 'function' ? t(key) : fallback;
+                showToast(getTranslation('message.loginError', 'Ошибка при входе в систему'), 'error');
             }
         });
     }

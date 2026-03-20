@@ -15,14 +15,18 @@
             <div class="header-content">
                 <h1 class="logo">Система ОТК</h1>
                 <nav class="nav">
-                    <a href="/index.html" class="nav-link">Главная</a>
-                    <a href="/pages/ml-closure.html" class="nav-link">Закрытие МЛ</a>
-                    <a href="/pages/prem-koef.html" class="nav-link active">Премиальные коэффициенты</a>
-                    <a href="/pages/dce-catalog.html" class="nav-link">Каталог ДСЕ</a>
+                    <a href="/index.html" class="nav-link" data-i18n="nav.home">Главная</a>
+                    <a href="/pages/ml-closure.html" class="nav-link" data-i18n="nav.mlClosure">Закрытие МЛ</a>
+                    <a href="/pages/prem-koef.html" class="nav-link active" data-i18n="nav.premKoef">Премиальные коэффициенты</a>
+                    <a href="/pages/dce-catalog.html" class="nav-link" data-i18n="nav.dceCatalog">Каталог ДСЕ</a>
                 </nav>
                 <div id="userInfoBlock" class="user-info" style="display: none;">
+                    <div class="language-switcher">
+                        <button id="langRu" class="lang-btn active" onclick="setLanguage('ru')" title="Русский">RU</button>
+                        <button id="langEn" class="lang-btn" onclick="setLanguage('en')" title="English">EN</button>
+                    </div>
                     <span class="user-name" id="userName">Пользователь</span>
-                    <button id="logoutBtn" class="btn btn-secondary btn-sm">Выйти</button>
+                    <button id="logoutBtn" class="btn btn-secondary btn-sm" data-i18n="nav.logout">Выйти</button>
                 </div>
             </div>
         </header>
@@ -30,67 +34,67 @@
         <!-- Основной контент -->
         <main class="main-content">
             <div class="page-header">
-                <h2>Премиальные коэффициенты</h2>
+                <h2 data-i18n="premKoef.title">Премиальные коэффициенты</h2>
             </div>
 
             <!-- Статистика -->
             <div class="stats-grid">
                 <div class="stat-card">
                     <div class="stat-value" id="totalKoefCount">0</div>
-                    <div class="stat-label">Всего коэффициентов</div>
+                    <div class="stat-label" data-i18n="premKoef.totalCoefficients">Всего коэффициентов</div>
                 </div>
                 <div class="stat-card">
                     <div class="stat-value" id="activeKoefCount">0</div>
-                    <div class="stat-label">Активных</div>
+                    <div class="stat-label" data-i18n="premKoef.active">Активных</div>
                 </div>
                 <div class="stat-card">
                     <div class="stat-value" id="inactiveKoefCount">0</div>
-                    <div class="stat-label">Неактивных</div>
+                    <div class="stat-label" data-i18n="premKoef.inactive">Неактивных</div>
                 </div>
             </div>
 
             <!-- Панель управления -->
             <div class="search-bar">
                 <div class="section-header" style="margin-bottom: var(--spacing-md);">
-                    <h3>Фильтры и поиск</h3>
-                    <button id="addKoefBtn" class="btn btn-primary">+ Добавить коэффициент</button>
+                    <h3 data-i18n="premKoef.filtersAndSearch">Фильтры и поиск</h3>
+                    <button id="addKoefBtn" class="btn btn-primary" data-i18n="premKoef.addCoefficient">+ Добавить коэффициент</button>
                 </div>
 
                 <div class="form-row">
                     <div class="form-group">
-                        <label for="searchInput">Поиск по наименованию</label>
-                        <input type="text" id="searchInput" placeholder="Введите название...">
+                        <label for="searchInput" data-i18n="premKoef.searchByName">Поиск по наименованию</label>
+                        <input type="text" id="searchInput" data-i18n-placeholder="premKoef.searchPlaceholder" placeholder="Введите название...">
                     </div>
                     <div class="form-group">
-                        <label for="statusFilter">Статус</label>
+                        <label for="statusFilter" data-i18n="premKoef.statusFilter">Статус</label>
                         <select id="statusFilter">
-                            <option value="all">Все</option>
-                            <option value="active" selected>Только активные</option>
-                            <option value="inactive">Только неактивные</option>
+                            <option value="all" data-i18n="premKoef.statusAll">Все</option>
+                            <option value="active" selected data-i18n="premKoef.statusActive">Только активные</option>
+                            <option value="inactive" data-i18n="premKoef.statusInactive">Только неактивные</option>
                         </select>
                     </div>
                     <div class="form-group">
-                        <label for="productFilter">Изделие</label>
+                        <label for="productFilter" data-i18n="premKoef.productFilter">Изделие</label>
                         <select id="productFilter">
-                            <option value="">Все изделия</option>
+                            <option value="" data-i18n="premKoef.allProducts">Все изделия</option>
                         </select>
                     </div>
                     <div class="form-group">
-                        <label for="operationTypeFilter">Тип операции</label>
+                        <label for="operationTypeFilter" data-i18n="premKoef.operationTypeFilter">Тип операции</label>
                         <select id="operationTypeFilter">
-                            <option value="">Все типы</option>
+                            <option value="" data-i18n="premKoef.allTypes">Все типы</option>
                         </select>
                     </div>
                 </div>
 
                 <div class="form-row">
                     <div class="form-group">
-                        <label for="dateFilter">Дата проверки</label>
+                        <label for="dateFilter" data-i18n="premKoef.dateCheck">Дата проверки</label>
                         <input type="date" id="dateFilter">
                     </div>
                     <div class="form-group">
                         <label>&nbsp;</label>
-                        <button id="resetFiltersBtn" class="btn btn-secondary btn-block">Сбросить фильтры</button>
+                        <button id="resetFiltersBtn" class="btn btn-secondary btn-block" data-i18n="premKoef.resetFilters">Сбросить фильтры</button>
                     </div>
                 </div>
             </div>
@@ -106,57 +110,57 @@
     <div id="koefModal" class="modal">
         <div class="modal-content">
             <span class="modal-close">&times;</span>
-            <h2 id="modalTitle">Добавить коэффициент</h2>
+            <h2 id="modalTitle" data-i18n="modal.koef.titleAdd">Добавить коэффициент</h2>
             <form id="koefForm">
                 <input type="hidden" id="koefId" name="koefId">
                 
                 <div class="form-group">
-                    <label for="koefName">Наименование *</label>
+                    <label for="koefName" data-i18n="modal.koef.name">Наименование *</label>
                     <input type="text" id="koefName" name="koefName" required>
                 </div>
 
                 <div class="form-group">
-                    <label for="koefValue">Коэффициент *</label>
+                    <label for="koefValue" data-i18n="modal.koef.coefficient">Коэффициент *</label>
                     <input type="number" id="koefValue" name="koefValue" step="0.01" min="0.01" required>
-                    <small style="color: var(--color-neutral);">Например: 1.5 означает +50% к базовой ставке</small>
+                    <small style="color: var(--color-neutral);" data-i18n="modal.koef.coefficientHint">Например: 1.5 означает +50% к базовой ставке</small>
                 </div>
 
                 <div class="form-row">
                     <div class="form-group">
-                        <label for="koefStartDate">Дата начала *</label>
+                        <label for="koefStartDate" data-i18n="modal.koef.startDate">Дата начала *</label>
                         <input type="date" id="koefStartDate" name="koefStartDate" required>
                     </div>
                     <div class="form-group">
-                        <label for="koefEndDate">Дата окончания</label>
+                        <label for="koefEndDate" data-i18n="modal.koef.endDate">Дата окончания</label>
                         <input type="date" id="koefEndDate" name="koefEndDate">
-                        <small style="color: var(--color-neutral);">Оставьте пустым для бессрочного</small>
+                        <small style="color: var(--color-neutral);" data-i18n="modal.koef.endDateHint">Оставьте пустым для бессрочного</small>
                     </div>
                 </div>
 
                 <div class="form-group">
-                    <label for="koefProduct">Изделие</label>
+                    <label for="koefProduct" data-i18n="modal.koef.product">Изделие</label>
                     <select id="koefProduct" name="koefProduct">
-                        <option value="">Не указано (для всех)</option>
+                        <option value="" data-i18n="modal.koef.productNotSpecified">Не указано (для всех)</option>
                     </select>
                 </div>
 
                 <div class="form-group">
-                    <label for="koefDce">ДСЕ</label>
+                    <label for="koefDce" data-i18n="modal.koef.dce">ДСЕ</label>
                     <select id="koefDce" name="koefDce">
-                        <option value="">Не указано (для всех)</option>
+                        <option value="" data-i18n="modal.koef.dceNotSpecified">Не указано (для всех)</option>
                     </select>
                 </div>
 
                 <div class="form-group">
-                    <label for="koefOperationType">Тип операции</label>
+                    <label for="koefOperationType" data-i18n="modal.koef.operationType">Тип операции</label>
                     <select id="koefOperationType" name="koefOperationType">
-                        <option value="">Не указано (для всех)</option>
+                        <option value="" data-i18n="modal.koef.operationTypeNotSpecified">Не указано (для всех)</option>
                     </select>
                 </div>
 
                 <div class="form-actions">
-                    <button type="button" class="btn btn-secondary" onclick="hideModal('koefModal')">Отмена</button>
-                    <button type="submit" class="btn btn-primary">Сохранить</button>
+                    <button type="button" class="btn btn-secondary" onclick="hideModal('koefModal')" data-i18n="modal.koef.cancel">Отмена</button>
+                    <button type="submit" class="btn btn-primary" data-i18n="modal.koef.save">Сохранить</button>
                 </div>
             </form>
         </div>
@@ -165,24 +169,25 @@
     <!-- Модальное окно для авторизации -->
     <div id="authModal" class="modal">
         <div class="modal-content">
-            <h2>Вход в систему</h2>
+            <h2 data-i18n="modal.auth.title">Вход в систему</h2>
             <form id="loginForm">
                 <div class="form-group">
-                    <label for="username">Логин</label>
+                    <label for="username" data-i18n="modal.auth.username">Логин</label>
                     <input type="text" id="username" name="username" required>
                 </div>
                 <div class="form-group">
-                    <label for="password">Пароль</label>
+                    <label for="password" data-i18n="modal.auth.password">Пароль</label>
                     <input type="password" id="password" name="password" required>
                 </div>
                 <div class="form-actions">
-                    <button type="submit" class="btn btn-primary">Войти</button>
+                    <button type="submit" class="btn btn-primary" data-i18n="modal.auth.loginBtn">Войти</button>
                 </div>
             </form>
         </div>
     </div>
 
     <script src="/js/utils.js"></script>
+    <script src="/js/i18n.js"></script>
     <script src="/js/api.js"></script>
     <script src="/js/components.js"></script>
     <script src="/js/pages/prem-koef.js"></script>

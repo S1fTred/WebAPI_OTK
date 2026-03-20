@@ -59,19 +59,19 @@ async function loadReferenceData() {
         
         // Показываем предупреждение, если данных нет
         if (employees.length === 0 && products.length === 0) {
-            showToast('База данных пуста. Добавьте данные через API или SQL.', 'warning');
+            showToast(t('message.emptyDatabase'), 'warning');
         }
         
     } catch (error) {
         console.error('Критическая ошибка загрузки справочников:', error);
-        showToast('Не удалось подключиться к серверу. Проверьте, что сервер запущен.', 'error');
+        showToast(t('message.serverError'), 'error');
     }
 }
 
 // Заполнение селекта изделий
 function populateProductSelect() {
     const select = document.getElementById('productSelect');
-    select.innerHTML = '<option value="">Выберите изделие...</option>';
+    select.innerHTML = `<option value="">${t('mlClosure.selectProduct')}</option>`;
     
     products.forEach(product => {
         const option = document.createElement('option');
@@ -85,11 +85,11 @@ function populateProductSelect() {
 function populateEmployeeSelects() {
     // Для фильтра операций
     const filterSelect = document.getElementById('operationEmployeeFilter');
-    filterSelect.innerHTML = '<option value="">Все сотрудники</option>';
+    filterSelect.innerHTML = `<option value="">${t('mlClosure.allEmployees')}</option>`;
     
     // Для закрытия МЛ
     const otkSelect = document.getElementById('otkEmployee');
-    otkSelect.innerHTML = '<option value="">Выберите сотрудника...</option>';
+    otkSelect.innerHTML = `<option value="">${t('modal.closeMl.selectEmployee')}</option>`;
     
     employees.forEach(emp => {
         const option1 = document.createElement('option');
@@ -172,7 +172,7 @@ async function handleProductChange(e) {
     try {
         const dceList = await productApi.getDCE(productId);
         const dceSelect = document.getElementById('dceSelect');
-        dceSelect.innerHTML = '<option value="">Выберите ДСЕ...</option>';
+        dceSelect.innerHTML = `<option value="">${t('mlClosure.selectDce')}</option>`;
         
         dceList.forEach(dce => {
             const option = document.createElement('option');
@@ -183,7 +183,7 @@ async function handleProductChange(e) {
         
     } catch (error) {
         console.error('Ошибка загрузки ДСЕ:', error);
-        showToast('Ошибка загрузки ДСЕ', 'error');
+        showToast(t('message.errorLoadingDce'), 'error');
     }
 }
 
@@ -225,14 +225,14 @@ async function loadMlList() {
     } else if (searchType === 'product') {
         const productId = document.getElementById('productSelect').value;
         if (!productId) {
-            showToast('Выберите изделие', 'warning');
+            showToast(t('message.selectProduct'), 'warning');
             return;
         }
         filters.изделиеId = productId;
     } else if (searchType === 'dce') {
         const dceId = document.getElementById('dceSelect').value;
         if (!dceId) {
-            showToast('Выберите ДСЕ', 'warning');
+            showToast(t('message.selectDce'), 'warning');
             return;
         }
         filters.дсеId = dceId;
@@ -267,7 +267,7 @@ async function loadMlList() {
         
     } catch (error) {
         console.error('Ошибка поиска МЛ:', error);
-        showToast('Ошибка при поиске маршрутных листов', 'error');
+        showToast(t('message.errorSearchMl'), 'error');
     }
 }
 
@@ -300,14 +300,14 @@ function displayMlList(mlList) {
     // Обновляем счетчик с информацией о пагинации
     const startRecord = mlList.length > 0 ? (currentPage - 1) * pageSize + 1 : 0;
     const endRecord = Math.min(currentPage * pageSize, totalCount);
-    countBadge.textContent = `${startRecord}-${endRecord} из ${totalCount}`;
+    countBadge.textContent = `${startRecord}-${endRecord} ${t('pagination.of')} ${totalCount}`;
     
     if (mlList.length === 0) {
         container.innerHTML = `
             <div class="empty-state">
                 <div class="empty-state-icon">📋</div>
-                <h3>Маршрутные листы не найдены</h3>
-                <p>Попробуйте изменить параметры поиска</p>
+                <h3>${t('message.noMl')}</h3>
+                <p>${t('message.tryChangeFilters')}</p>
             </div>
         `;
         section.classList.remove('hidden');
@@ -315,24 +315,24 @@ function displayMlList(mlList) {
     }
     
     const columns = [
-        { label: 'Номер МЛ', field: 'номерМЛ' },
-        { label: 'Изделие', field: 'изделие' },
-        { label: 'ДСЕ', field: 'дсе' },
-        { label: 'Дата создания', field: 'датаСоздания', format: (val) => formatDate(val) },
+        { label: t('table.mlNumber'), field: 'номерМЛ' },
+        { label: t('table.product'), field: 'изделие' },
+        { label: t('table.dce'), field: 'дсе' },
+        { label: t('table.dateCreated'), field: 'датаСоздания', format: (val) => formatDate(val) },
         { 
-            label: 'Статус', 
+            label: t('table.status'), 
             field: 'закрыт',
             format: (val) => {
                 const status = val ? 'закрыт' : 'открыт';
-                const text = val ? 'Закрыт' : 'Открыт';
+                const text = val ? t('table.statusClosed') : t('table.statusOpen');
                 return `<span class="status-badge ${status}">${text}</span>`;
             }
         },
-        { label: 'Операций', field: 'количествоОпераций' }
+        { label: t('table.operations'), field: 'количествоОпераций' }
     ];
     
     const tableHtml = createTable(columns, mlList, {
-        emptyMessage: 'Нет маршрутных листов',
+        emptyMessage: t('message.noMl'),
         onRowClick: (index) => selectMl(mlList[index])
     });
     
@@ -360,7 +360,7 @@ function createMlPagination() {
     
     // Кнопка "Назад"
     const prevDisabled = currentPage === 1 ? 'disabled' : '';
-    html += `<button class="pagination-btn" onclick="changePage(${currentPage - 1})" ${prevDisabled}>‹ Назад</button>`;
+    html += `<button class="pagination-btn" onclick="changePage(${currentPage - 1})" ${prevDisabled}>${t('pagination.prev')}</button>`;
     
     // Номера страниц
     const maxButtons = 5;
@@ -392,12 +392,12 @@ function createMlPagination() {
     
     // Кнопка "Вперед"
     const nextDisabled = currentPage === totalPages ? 'disabled' : '';
-    html += `<button class="pagination-btn" onclick="changePage(${currentPage + 1})" ${nextDisabled}>Вперед ›</button>`;
+    html += `<button class="pagination-btn" onclick="changePage(${currentPage + 1})" ${nextDisabled}>${t('pagination.next')}</button>`;
     
     // Селектор размера страницы
     html += `
         <div class="pagination-size-selector" style="margin-left: auto;">
-            <label for="mlPageSize">Записей на странице:</label>
+            <label for="mlPageSize">${t('pagination.recordsPerPage')}:</label>
             <select id="mlPageSize" onchange="changePageSize(parseInt(this.value))">
                 <option value="10" ${pageSize === 10 ? 'selected' : ''}>10</option>
                 <option value="20" ${pageSize === 20 ? 'selected' : ''}>20</option>
@@ -444,7 +444,7 @@ async function selectMl(ml) {
         
     } catch (error) {
         console.error('Ошибка загрузки операций:', error);
-        showToast('Ошибка загрузки операций МЛ', 'error');
+        showToast(t('message.errorLoadingOperations'), 'error');
     }
 }
 
@@ -475,34 +475,34 @@ function displayOperations(operations) {
         container.innerHTML = `
             <div class="empty-state">
                 <div class="empty-state-icon">⚙️</div>
-                <h3>Нет операций</h3>
-                <p>Для этого МЛ еще не добавлены операции</p>
+                <h3>${t('message.noOperations')}</h3>
+                <p>${t('message.noOperationsForMl')}</p>
             </div>
         `;
         return;
     }
     
     const columns = [
-        { label: 'Тип операции', field: 'типОперации' },
+        { label: t('table.operationType'), field: 'типОперации' },
         { 
-            label: 'Сотрудник', 
+            label: t('table.employee'), 
             field: 'сотрудник',
             format: (val, row) => formatEmployee(row.табельныйНомер, val)
         },
-        { label: 'Кол-во', field: 'количество' },
-        { label: 'Норма (ч)', field: 'нормаВремениЧас', format: (val) => formatNumber(val, 2) },
-        { label: 'Тариф', field: 'названиеТарифа' },
-        { label: 'Цена (₽/ч)', field: 'ценаЗаЧас', format: (val) => formatNumber(val, 2) },
-        { label: 'Дата Исполнения', field: 'датаИсполнения', format: (val) => formatDateTime(val) },
-        { label: 'Дата Закрытия', field: 'датаЗакрытия', format: (val) => formatDateTime(val) },
-        { label: 'Базовая (₽)', field: 'базоваяСумма', format: (val) => formatNumber(val, 2) },
-        { label: 'Коэф. сделки', field: 'коэффициентСделки', format: (val) => formatNumber(val, 2) },
-        { label: 'Надбавки (₽)', field: 'суммаНадбавки', format: (val) => formatNumber(val, 2) },
-        { label: 'Коэф. премии', field: 'коэффициентПремии', format: (val) => formatNumber(val, 2) },
-        { label: 'Премия (₽)', field: 'суммаПремии', format: (val) => formatNumber(val, 2) },
-        { label: 'Итого (₽)', field: 'итого', format: (val) => formatNumber(val, 2) },
+        { label: t('table.quantity'), field: 'количество' },
+        { label: t('table.timeStandard'), field: 'нормаВремениЧас', format: (val) => formatNumber(val, 2) },
+        { label: t('table.tariff'), field: 'названиеТарифа' },
+        { label: t('table.pricePerHour'), field: 'ценаЗаЧас', format: (val) => formatNumber(val, 2) },
+        { label: t('table.executionDate'), field: 'датаИсполнения', format: (val) => formatDateTime(val) },
+        { label: t('table.closureDate'), field: 'датаЗакрытия', format: (val) => formatDateTime(val) },
+        { label: t('table.baseSum'), field: 'базоваяСумма', format: (val) => formatNumber(val, 2) },
+        { label: t('table.dealCoef'), field: 'коэффициентСделки', format: (val) => formatNumber(val, 2) },
+        { label: t('table.surcharge'), field: 'суммаНадбавки', format: (val) => formatNumber(val, 2) },
+        { label: t('table.premiumCoef'), field: 'коэффициентПремии', format: (val) => formatNumber(val, 2) },
+        { label: t('table.premium'), field: 'суммаПремии', format: (val) => formatNumber(val, 2) },
+        { label: t('table.total'), field: 'итого', format: (val) => formatNumber(val, 2) },
         { 
-            label: 'Статус', 
+            label: t('table.status'), 
             field: 'статус',
             format: (val) => {
                 if (!val) return '-';
@@ -516,18 +516,18 @@ function displayOperations(operations) {
         {
             label: '📊',
             class: 'btn-sm btn-info',
-            title: 'Показать расчет',
+            title: t('action.showCalculation'),
             handler: (index) => showCalculationDetails(operations[index]),
             disabled: () => false
         },
         {
-            label: 'Завершить',
+            label: t('action.finish'),
             class: 'btn-sm btn-success',
             handler: (index) => finishOperation(operations[index]),
             disabled: (row) => row.статус === 'Завершена' || row.статус === 'Отменена'
         },
         {
-            label: 'Отменить',
+            label: t('action.cancel'),
             class: 'btn-sm btn-warning',
             handler: (index) => cancelOperation(operations[index]),
             disabled: (row) => row.статус !== 'Завершена'
@@ -535,7 +535,7 @@ function displayOperations(operations) {
     ];
     
     const tableHtml = createTable(columns, operations, {
-        emptyMessage: 'Нет операций',
+        emptyMessage: t('message.noOperations'),
         rowActions: rowActions
     });
     
@@ -599,18 +599,18 @@ function applyOperationFilters() {
 // Завершение операции
 async function finishOperation(operation) {
     confirmDialog(
-        `Завершить операцию "${operation.типОперации}"?`,
+        `${t('confirm.finishOperation')} "${operation.типОперации}"?`,
         async () => {
             try {
                 await operationApi.finish(operation.id);
-                showToast('Операция успешно завершена', 'success');
+                showToast(t('message.operationFinished'), 'success');
                 
                 // Перезагрузка операций
                 await selectMl(currentMl);
                 
             } catch (error) {
                 console.error('Ошибка завершения операции:', error);
-                showToast('Ошибка при завершении операции', 'error');
+                showToast(t('message.errorFinishOperation'), 'error');
             }
         }
     );
@@ -618,21 +618,21 @@ async function finishOperation(operation) {
 
 // Отмена операции
 async function cancelOperation(operation) {
-    const message = `Отменить операцию "${operation.типОперации}"?\n\nОперация будет помечена как отмененная. Это действие нельзя отменить.`;
+    const message = `${t('confirm.cancelOperation')} "${operation.типОперации}"?\n\n${t('confirm.cancelOperationText')}`;
     
     confirmDialog(
         message,
         async () => {
             try {
                 await operationApi.cancel(operation.id);
-                showToast('Операция отменена', 'success');
+                showToast(t('message.operationCancelled'), 'success');
                 
                 // Перезагрузка операций
                 await selectMl(currentMl);
                 
             } catch (error) {
                 console.error('Ошибка отмены операции:', error);
-                const message = error.response?.data?.message || 'Ошибка при отмене операции';
+                const message = error.response?.data?.message || t('message.errorCancelOperation');
                 showToast(message, 'error');
             }
         }
@@ -648,7 +648,7 @@ async function handleCloseMl(e) {
     const defects = parseInt(document.getElementById('defectQuantity').value);
     
     if (!employeeId) {
-        showToast('Выберите сотрудника ОТК', 'warning');
+        showToast(t('message.selectEmployee'), 'warning');
         return;
     }
     
@@ -660,7 +660,7 @@ async function handleCloseMl(e) {
     
     try {
         await mlApi.close(currentMl.id, data);
-        showToast('Маршрутный лист успешно закрыт', 'success');
+        showToast(t('message.mlClosed'), 'success');
         
         hideModal('closeMlModal');
         
@@ -673,7 +673,7 @@ async function handleCloseMl(e) {
         
     } catch (error) {
         console.error('Ошибка закрытия МЛ:', error);
-        showToast(error.message || 'Ошибка при закрытии МЛ', 'error');
+        showToast(error.message || t('message.errorCloseMl'), 'error');
     }
 }
 
@@ -707,33 +707,33 @@ async function showCalculationDetails(operation) {
         
         // Входные данные
         html += '<div class="calculation-section">';
-        html += '<h3>Входные данные</h3>';
+        html += `<h3>${t('modal.calculation.inputData')}</h3>`;
         html += '<div class="calculation-grid">';
-        html += `<div class="calc-item"><span class="calc-label">Количество:</span><span class="calc-value">${calculation.входныеДанные.количество || 0}</span></div>`;
-        html += `<div class="calc-item"><span class="calc-label">Норма времени (ч):</span><span class="calc-value">${formatNumber(calculation.входныеДанные.нормаВремениЧас, 2)}</span></div>`;
-        html += `<div class="calc-item"><span class="calc-label">Цена за час (₽/ч):</span><span class="calc-value">${formatNumber(calculation.входныеДанные.ценаЗаЧас, 2)}</span></div>`;
-        html += `<div class="calc-item"><span class="calc-label">Коэффициент сделки:</span><span class="calc-value">${formatNumber(calculation.входныеДанные.коэффициентСделки, 2)}</span></div>`;
-        html += `<div class="calc-item"><span class="calc-label">Дата исполнения:</span><span class="calc-value">${formatDateTime(calculation.входныеДанные.датаИсполнения)}</span></div>`;
-        html += `<div class="calc-item"><span class="calc-label">Дата закрытия:</span><span class="calc-value">${formatDateTime(calculation.входныеДанные.датаЗакрытия)}</span></div>`;
-        html += `<div class="calc-item"><span class="calc-label">Выполнено в срок:</span><span class="calc-value">${calculation.входныеДанные.вСрок ? 'Да ✓' : 'Нет ✗'}</span></div>`;
+        html += `<div class="calc-item"><span class="calc-label">${t('modal.calculation.quantity')}:</span><span class="calc-value">${calculation.входныеДанные.количество || 0}</span></div>`;
+        html += `<div class="calc-item"><span class="calc-label">${t('modal.calculation.timeStandard')}:</span><span class="calc-value">${formatNumber(calculation.входныеДанные.нормаВремениЧас, 2)}</span></div>`;
+        html += `<div class="calc-item"><span class="calc-label">${t('modal.calculation.pricePerHour')}:</span><span class="calc-value">${formatNumber(calculation.входныеДанные.ценаЗаЧас, 2)}</span></div>`;
+        html += `<div class="calc-item"><span class="calc-label">${t('modal.calculation.dealCoef')}:</span><span class="calc-value">${formatNumber(calculation.входныеДанные.коэффициентСделки, 2)}</span></div>`;
+        html += `<div class="calc-item"><span class="calc-label">${t('modal.calculation.executionDate')}:</span><span class="calc-value">${formatDateTime(calculation.входныеДанные.датаИсполнения)}</span></div>`;
+        html += `<div class="calc-item"><span class="calc-label">${t('modal.calculation.closureDate')}:</span><span class="calc-value">${formatDateTime(calculation.входныеДанные.датаЗакрытия)}</span></div>`;
+        html += `<div class="calc-item"><span class="calc-label">${t('modal.calculation.onTime')}:</span><span class="calc-value">${calculation.входныеДанные.вСрок ? t('modal.calculation.yes') + ' ✓' : t('modal.calculation.no') + ' ✗'}</span></div>`;
         html += '</div>';
         html += '</div>';
         
         // Источник коэффициента сделки
         if (calculation.источникКоэффициентаСделки) {
             html += '<div class="calculation-section">';
-            html += '<h3>Источник коэффициента сделки</h3>';
+            html += `<h3>${t('modal.calculation.coefSource')}</h3>`;
             
             if (calculation.источникКоэффициентаСделки.найден) {
                 html += '<div class="calculation-grid">';
-                html += `<div class="calc-item"><span class="calc-label">Изделие:</span><span class="calc-value">${calculation.источникКоэффициентаСделки.изделие || '-'}</span></div>`;
-                html += `<div class="calc-item"><span class="calc-label">ДСЕ:</span><span class="calc-value">${calculation.источникКоэффициентаСделки.дсе || '-'}</span></div>`;
-                html += `<div class="calc-item"><span class="calc-label">Тип операции:</span><span class="calc-value">${calculation.источникКоэффициентаСделки.типОперации || '-'}</span></div>`;
-                html += `<div class="calc-item"><span class="calc-label">Коэффициент:</span><span class="calc-value">${formatNumber(calculation.источникКоэффициентаСделки.коэффициент, 2)}</span></div>`;
-                html += `<div class="calc-item"><span class="calc-label">Период действия:</span><span class="calc-value">${formatDate(calculation.источникКоэффициентаСделки.датаНачала)} - ${formatDate(calculation.источникКоэффициентаСделки.датаОкончания) || 'бессрочно'}</span></div>`;
+                html += `<div class="calc-item"><span class="calc-label">${t('modal.calculation.product')}:</span><span class="calc-value">${calculation.источникКоэффициентаСделки.изделие || '-'}</span></div>`;
+                html += `<div class="calc-item"><span class="calc-label">${t('modal.calculation.dce')}:</span><span class="calc-value">${calculation.источникКоэффициентаСделки.дсе || '-'}</span></div>`;
+                html += `<div class="calc-item"><span class="calc-label">${t('modal.calculation.operationType')}:</span><span class="calc-value">${calculation.источникКоэффициентаСделки.типОперации || '-'}</span></div>`;
+                html += `<div class="calc-item"><span class="calc-label">${t('modal.calculation.coefficient')}:</span><span class="calc-value">${formatNumber(calculation.источникКоэффициентаСделки.коэффициент, 2)}</span></div>`;
+                html += `<div class="calc-item"><span class="calc-label">${t('modal.calculation.validPeriod')}:</span><span class="calc-value">${formatDate(calculation.источникКоэффициентаСделки.датаНачала)} - ${formatDate(calculation.источникКоэффициентаСделки.датаОкончания) || t('modal.calculation.indefinite')}</span></div>`;
                 html += '</div>';
             } else {
-                html += '<p class="text-muted">Премиальный коэффициент не найден. Используется значение по умолчанию: 1.0</p>';
+                html += `<p class="text-muted">${t('modal.calculation.notFound')}</p>`;
             }
             
             html += '</div>';
@@ -741,40 +741,41 @@ async function showCalculationDetails(operation) {
         
         // Формулы и расчеты
         html += '<div class="calculation-section">';
-        html += '<h3>Формулы расчета</h3>';
+        html += `<h3>${t('modal.calculation.formulas')}</h3>`;
         
         // 1. Базовая сумма
         html += '<div class="formula-block">';
-        html += '<div class="formula-title">1. Базовая сумма</div>';
-        html += `<div class="formula-text">${calculation.формулы.базоваяСумма}</div>`;
+        html += `<div class="formula-title">1. ${t('modal.calculation.baseSum')}</div>`;
+        html += `<div class="formula-text">${t('modal.calculation.baseSumFormula')}</div>`;
         html += `<div class="formula-calc">${calculation.входныеДанные.количество} × ${formatNumber(calculation.входныеДанные.нормаВремениЧас, 2)} × ${formatNumber(calculation.входныеДанные.ценаЗаЧас, 2)} = <strong>${formatNumber(calculation.результаты.базоваяСумма, 2)} ₽</strong></div>`;
         html += '</div>';
         
         // 2. Сумма надбавки
         html += '<div class="formula-block">';
-        html += '<div class="formula-title">2. Сумма надбавки</div>';
-        html += `<div class="formula-text">${calculation.формулы.суммаНадбавки}</div>`;
+        html += `<div class="formula-title">2. ${t('modal.calculation.surcharge')}</div>`;
+        html += `<div class="formula-text">${t('modal.calculation.surchargeFormula')}</div>`;
         html += `<div class="formula-calc">(${formatNumber(calculation.входныеДанные.коэффициентСделки, 2)} - 1) × ${formatNumber(calculation.результаты.базоваяСумма, 2)} = <strong>${formatNumber(calculation.результаты.суммаНадбавки, 2)} ₽</strong></div>`;
         html += '</div>';
         
         // 3. Коэффициент премии
         html += '<div class="formula-block">';
-        html += '<div class="formula-title">3. Коэффициент премии</div>';
-        html += `<div class="formula-text">${calculation.формулы.коэффициентПремии}</div>`;
-        html += `<div class="formula-calc">Операция выполнена ${calculation.входныеДанные.вСрок ? '<strong>в срок</strong>' : '<strong>с просрочкой</strong>'} → Коэффициент = <strong>${formatNumber(calculation.результаты.коэффициентПремии, 2)}</strong></div>`;
+        html += `<div class="formula-title">3. ${t('modal.calculation.premiumCoef')}</div>`;
+        html += `<div class="formula-text">${t('modal.calculation.premiumCoefFormula')}</div>`;
+        const onTimeText = calculation.входныеДанные.вСрок ? t('modal.calculation.onTimeText') : t('modal.calculation.lateText');
+        html += `<div class="formula-calc">${t('message.operationFinished').split(' ')[0]} <strong>${onTimeText}</strong> → ${t('modal.calculation.coefficient')} = <strong>${formatNumber(calculation.результаты.коэффициентПремии, 2)}</strong></div>`;
         html += '</div>';
         
         // 4. Сумма премии
         html += '<div class="formula-block">';
-        html += '<div class="formula-title">4. Сумма премии</div>';
-        html += `<div class="formula-text">${calculation.формулы.суммаПремии}</div>`;
+        html += `<div class="formula-title">4. ${t('modal.calculation.premium')}</div>`;
+        html += `<div class="formula-text">${t('modal.calculation.premiumFormula')}</div>`;
         html += `<div class="formula-calc">${formatNumber(calculation.результаты.коэффициентПремии, 2)} × (${formatNumber(calculation.результаты.суммаНадбавки, 2)} + ${formatNumber(calculation.результаты.базоваяСумма, 2)}) = <strong>${formatNumber(calculation.результаты.суммаПремии, 2)} ₽</strong></div>`;
         html += '</div>';
         
         // 5. Итого
         html += '<div class="formula-block formula-total">';
-        html += '<div class="formula-title">5. Итоговая сумма</div>';
-        html += `<div class="formula-text">${calculation.формулы.итого}</div>`;
+        html += `<div class="formula-title">5. ${t('modal.calculation.totalSum')}</div>`;
+        html += `<div class="formula-text">${t('modal.calculation.totalFormula')}</div>`;
         html += `<div class="formula-calc">${formatNumber(calculation.результаты.базоваяСумма, 2)} + ${formatNumber(calculation.результаты.суммаНадбавки, 2)} + ${formatNumber(calculation.результаты.суммаПремии, 2)} = <strong>${formatNumber(calculation.результаты.итого, 2)} ₽</strong></div>`;
         html += '</div>';
         
@@ -786,7 +787,7 @@ async function showCalculationDetails(operation) {
         
     } catch (error) {
         console.error('Ошибка загрузки расчета:', error);
-        showToast('Ошибка при загрузке деталей расчета', 'error');
+        showToast(t('message.errorLoadingCalculation'), 'error');
     }
 }
 
@@ -794,3 +795,18 @@ async function showCalculationDetails(operation) {
 window.changePage = changePage;
 window.changePageSize = changePageSize;
 window.finishOperation = finishOperation;
+
+// Обработчик смены языка
+document.addEventListener('languageChanged', () => {
+    // Перезаполнить селекты с переводами
+    populateProductSelect();
+    populateEmployeeSelects();
+    
+    // Перезагрузить текущие данные если они есть
+    if (currentMl) {
+        displayMlDetails(currentMl);
+        displayOperations(filteredOperations);
+    } else if (currentMlList.length > 0) {
+        displayMlList(currentMlList);
+    }
+});

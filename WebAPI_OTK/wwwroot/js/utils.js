@@ -6,7 +6,8 @@
 function formatDate(dateString) {
     if (!dateString) return '-';
     const date = new Date(dateString);
-    return date.toLocaleDateString('ru-RU', {
+    const locale = typeof getLanguage === 'function' ? (getLanguage() === 'en' ? 'en-US' : 'ru-RU') : 'ru-RU';
+    return date.toLocaleDateString(locale, {
         year: 'numeric',
         month: '2-digit',
         day: '2-digit'
@@ -17,7 +18,8 @@ function formatDate(dateString) {
 function formatDateTime(dateString) {
     if (!dateString) return '-';
     const date = new Date(dateString);
-    return date.toLocaleString('ru-RU', {
+    const locale = typeof getLanguage === 'function' ? (getLanguage() === 'en' ? 'en-US' : 'ru-RU') : 'ru-RU';
+    return date.toLocaleString(locale, {
         year: 'numeric',
         month: '2-digit',
         day: '2-digit',
@@ -29,7 +31,8 @@ function formatDateTime(dateString) {
 // Форматирование числа с разделителями
 function formatNumber(number, decimals = 2) {
     if (number === null || number === undefined) return '-';
-    return Number(number).toLocaleString('ru-RU', {
+    const locale = typeof getLanguage === 'function' ? (getLanguage() === 'en' ? 'en-US' : 'ru-RU') : 'ru-RU';
+    return Number(number).toLocaleString(locale, {
         minimumFractionDigits: decimals,
         maximumFractionDigits: decimals
     });
@@ -38,7 +41,8 @@ function formatNumber(number, decimals = 2) {
 // Форматирование валюты
 function formatCurrency(amount) {
     if (amount === null || amount === undefined) return '-';
-    return Number(amount).toLocaleString('ru-RU', {
+    const locale = typeof getLanguage === 'function' ? (getLanguage() === 'en' ? 'en-US' : 'ru-RU') : 'ru-RU';
+    return Number(amount).toLocaleString(locale, {
         style: 'currency',
         currency: 'RUB'
     });

@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Тест локализации</title>
+    <link rel="stylesheet" href="/css/main.css">
+    <style>
+        .test-container {
+            max-width: 800px;
+            margin: 50px auto;
+            padding: 20px;
+        }
+        .test-section {
+            margin: 20px 0;
+            padding: 15px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+        .lang-buttons {
+            margin-bottom: 20px;
+        }
+        .lang-buttons button {
+            margin-right: 10px;
+            padding: 10px 20px;
+            font-size: 16px;
+        }
+    </style>
+</head>
+<body>
+    <div class="test-container">
+        <h1>Тест локализации / Localization Test</h1>
+        
+        <div class="lang-buttons">
+            <button onclick="setLanguage('ru')" class="btn btn-primary">Русский (RU)</button>
+            <button onclick="setLanguage('en')" class="btn btn-primary">English (EN)</button>
+        </div>
+        
+        <div class="test-section">
+            <h2>Навигация / Navigation</h2>
+            <p data-i18n="nav.home">Главная</p>
+            <p data-i18n="nav.mlClosure">Закрытие МЛ</p>
+            <p data-i18n="nav.premKoef">Премиальные коэффициенты</p>
+            <p data-i18n="nav.dceCatalog">Каталог ДСЕ</p>
+        </div>
+        
+        <div class="test-section">
+            <h2>Главная страница / Home Page</h2>
+            <p data-i18n="home.welcome">Добро пожаловать в систему учета ОТК</p>
+            <p data-i18n="home.mlClosureTitle">Закрытие МЛ</p>
+            <p data-i18n="home.mlClosureDesc">Поиск и закрытие маршрутных листов и операций</p>
+        </div>
+        
+        <div class="test-section">
+            <h2>Таблица / Table</h2>
+            <p data-i18n="table.mlNumber">Номер МЛ</p>
+            <p data-i18n="table.product">Изделие</p>
+            <p data-i18n="table.status">Статус</p>
+            <p data-i18n="table.actions">Действия</p>
+        </div>
+        
+        <div class="test-section">
+            <h2>Сообщения / Messages</h2>
+            <p data-i18n="message.noData">Нет данных для отображения</p>
+            <p data-i18n="message.operationFinished">Операция успешно завершена</p>
+            <p data-i18n="message.mlClosed">Маршрутный лист успешно закрыт</p>
+        </div>
+        
+        <div class="test-section">
+            <h2>Текущий язык / Current Language</h2>
+            <p>Language: <strong id="currentLang"></strong></p>
+        </div>
+    </div>
+    
+    <script src="/js/i18n.js"></script>
+    <script>
+        document.getElementById('currentLang').textContent = getLanguage();
+        
+        document.addEventListener('languageChanged', (e) => {
+            document.getElementById('currentLang').textContent = e.detail.language;
+        });
+    </script>
+</body>
+</html>
