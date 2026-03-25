@@ -18,6 +18,10 @@
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
+    
+    <!-- Для экспорта в Excel и PDF -->
+    <PackageReference Include="ClosedXML" Version="0.102.2" />
+    <PackageReference Include="QuestPDF" Version="2024.3.0" />
   </ItemGroup>
 
 </Project>

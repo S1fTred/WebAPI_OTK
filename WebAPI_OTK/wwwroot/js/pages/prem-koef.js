@@ -9,6 +9,13 @@ let products = [];
 let dceList = [];
 let operationTypes = [];
 let editingKoef = null;
+let currentFilters = {
+    поиск: '',
+    статус: '',
+    изделиеID: null,
+    типОперацииID: null,
+    дата: null
+};
 
 // ========================================
 // ИНИЦИАЛИЗАЦИЯ
@@ -123,6 +130,47 @@ function initEventHandlers() {
     // Сброс фильтров
     document.getElementById('resetFiltersBtn').addEventListener('click', resetFilters);
     
+    // Экспорт в Excel
+    const exportExcelBtn = document.getElementById('exportExcelBtn');
+    console.log('Export Excel button:', exportExcelBtn);
+    console.log('exportApi available:', typeof exportApi !== 'undefined');
+    
+    if (exportExcelBtn) {
+        exportExcelBtn.addEventListener('click', () => {
+            console.log('Export Excel clicked');
+            if (typeof exportApi === 'undefined') {
+                console.error('exportApi is not defined');
+                showToast('Ошибка: модуль экспорта не загружен', 'error');
+                return;
+            }
+            const толькоАктивные = currentFilters.статус === 'active' ? true : (currentFilters.статус === 'inactive' ? false : null);
+            console.log('Filters:', { толькоАктивные, currentFilters });
+            exportApi.exportCoefficientsToExcel(толькоАктивные);
+        });
+    } else {
+        console.error('exportExcelBtn not found');
+    }
+    
+    // Экспорт в PDF
+    const exportPdfBtn = document.getElementById('exportPdfBtn');
+    console.log('Export PDF button:', exportPdfBtn);
+    
+    if (exportPdfBtn) {
+        exportPdfBtn.addEventListener('click', () => {
+            console.log('Export PDF clicked');
+            if (typeof exportApi === 'undefined') {
+                console.error('exportApi is not defined');
+                showToast('Ошибка: модуль экспорта не загружен', 'error');
+                return;
+            }
+            const толькоАктивные = currentFilters.статус === 'active' ? true : (currentFilters.статус === 'inactive' ? false : null);
+            console.log('Filters:', { толькоАктивные, currentFilters });
+            exportApi.exportCoefficientsToPDF(толькоАктивные);
+        });
+    } else {
+        console.error('exportPdfBtn not found');
+    }
+    
     // Форма коэффициента
     document.getElementById('koefForm').addEventListener('submit', handleSaveKoef);
     
@@ -180,6 +228,15 @@ function applyFilters() {
     const productFilter = document.getElementById('productFilter').value;
     const operationTypeFilter = document.getElementById('operationTypeFilter').value;
     const dateFilter = document.getElementById('dateFilter').value;
+    
+    // Сохраняем текущие фильтры
+    currentFilters = {
+        поиск: searchTerm,
+        статус: statusFilter,
+        изделиеID: productFilter ? parseInt(productFilter) : null,
+        типОперацииID: operationTypeFilter ? parseInt(operationTypeFilter) : null,
+        дата: dateFilter || null
+    };
     
     let filtered = [...allKoefs];
     

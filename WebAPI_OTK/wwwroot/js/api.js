@@ -312,3 +312,64 @@ const authApi = {
         return localStorage.getItem('userName') || 'Пользователь';
     }
 };
+
+// ========================================
+// API МЕТОДЫ ДЛЯ ЭКСПОРТА
+// ========================================
+
+const exportApi = {
+    // Экспорт каталога ДСЕ в Excel
+    exportDCEToExcel: (изделиеId = null) => {
+        const params = изделиеId ? `?изделиеId=${изделиеId}` : '';
+        window.open(`${API_BASE_URL}/Export/dce/excel${params}`, '_blank');
+    },
+    
+    // Экспорт каталога ДСЕ в PDF
+    exportDCEToPDF: (изделиеId = null) => {
+        const params = изделиеId ? `?изделиеId=${изделиеId}` : '';
+        window.open(`${API_BASE_URL}/Export/dce/pdf${params}`, '_blank');
+    },
+    
+    // Экспорт маршрутных листов в Excel
+    exportRouteListsToExcel: (filters = {}) => {
+        const params = new URLSearchParams();
+        if (filters.номерМЛ) params.append('номерМЛ', filters.номерМЛ);
+        if (filters.изделиеId) params.append('изделиеId', filters.изделиеId);
+        if (filters.дсеId) params.append('дсеId', filters.дсеId);
+        if (filters.закрыт !== undefined) params.append('закрыт', filters.закрыт);
+        
+        const queryString = params.toString();
+        const url = queryString ? `${API_BASE_URL}/Export/routelists/excel?${queryString}` : `${API_BASE_URL}/Export/routelists/excel`;
+        window.open(url, '_blank');
+    },
+    
+    // Экспорт маршрутных листов в PDF
+    exportRouteListsToPDF: (filters = {}) => {
+        const params = new URLSearchParams();
+        if (filters.номерМЛ) params.append('номерМЛ', filters.номерМЛ);
+        if (filters.изделиеId) params.append('изделиеId', filters.изделиеId);
+        if (filters.дсеId) params.append('дсеId', filters.дсеId);
+        if (filters.закрыт !== undefined) params.append('закрыт', filters.закрыт);
+        
+        const queryString = params.toString();
+        const url = queryString ? `${API_BASE_URL}/Export/routelists/pdf?${queryString}` : `${API_BASE_URL}/Export/routelists/pdf`;
+        window.open(url, '_blank');
+    },
+    
+    // Экспорт конкретного МЛ с операциями в PDF
+    exportRouteListDetailToPDF: (mlId) => {
+        window.open(`${API_BASE_URL}/Export/routelist/${mlId}/pdf`, '_blank');
+    },
+    
+    // Экспорт премиальных коэффициентов в Excel
+    exportCoefficientsToExcel: (толькоАктивные = null) => {
+        const params = толькоАктивные !== null ? `?толькоАктивные=${толькоАктивные}` : '';
+        window.open(`${API_BASE_URL}/Export/coefficients/excel${params}`, '_blank');
+    },
+    
+    // Экспорт премиальных коэффициентов в PDF
+    exportCoefficientsToPDF: (толькоАктивные = null) => {
+        const params = толькоАктивные !== null ? `?толькоАктивные=${толькоАктивные}` : '';
+        window.open(`${API_BASE_URL}/Export/coefficients/pdf${params}`, '_blank');
+    }
+};

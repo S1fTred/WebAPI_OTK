@@ -122,6 +122,17 @@ function initEventHandlers() {
     document.getElementById('closeMlBtn').addEventListener('click', () => showModal('closeMlModal'));
     document.getElementById('backToListBtn').addEventListener('click', backToList);
     
+    // Экспорт конкретного МЛ
+    document.getElementById('exportMlPdfBtn').addEventListener('click', () => {
+        if (currentMl && currentMl.id) {
+            console.log('Exporting ML detail:', currentMl.id);
+            exportApi.exportRouteListDetailToPDF(currentMl.id);
+        } else {
+            console.error('No ML selected');
+            showToast('Маршрутный лист не выбран', 'error');
+        }
+    });
+    
     // Форма закрытия МЛ
     document.getElementById('closeMlForm').addEventListener('submit', handleCloseMl);
     
@@ -130,6 +141,45 @@ function initEventHandlers() {
     document.getElementById('operationEmployeeFilter').addEventListener('change', applyOperationFilters);
     document.getElementById('operationDateFrom').addEventListener('change', applyOperationFilters);
     document.getElementById('operationDateTo').addEventListener('change', applyOperationFilters);
+    
+    // Экспорт
+    const exportExcelBtn = document.getElementById('exportExcelBtn');
+    const exportPdfBtn = document.getElementById('exportPdfBtn');
+    
+    console.log('Export buttons:', { exportExcelBtn, exportPdfBtn });
+    console.log('exportApi available:', typeof exportApi !== 'undefined');
+    
+    if (exportExcelBtn) {
+        exportExcelBtn.addEventListener('click', () => {
+            console.log('Export Excel clicked');
+            if (typeof exportApi === 'undefined') {
+                console.error('exportApi is not defined');
+                showToast('Ошибка: модуль экспорта не загружен', 'error');
+                return;
+            }
+            const filters = getCurrentSearchFilters();
+            console.log('Filters:', filters);
+            exportApi.exportRouteListsToExcel(filters);
+        });
+    } else {
+        console.error('exportExcelBtn not found');
+    }
+    
+    if (exportPdfBtn) {
+        exportPdfBtn.addEventListener('click', () => {
+            console.log('Export PDF clicked');
+            if (typeof exportApi === 'undefined') {
+                console.error('exportApi is not defined');
+                showToast('Ошибка: модуль экспорта не загружен', 'error');
+                return;
+            }
+            const filters = getCurrentSearchFilters();
+            console.log('Filters:', filters);
+            exportApi.exportRouteListsToPDF(filters);
+        });
+    } else {
+        console.error('exportPdfBtn not found');
+    }
     
     // Закрытие модального окна
     document.querySelector('#closeMlModal .modal-close').addEventListener('click', () => {
@@ -810,3 +860,47 @@ document.addEventListener('languageChanged', () => {
         displayMlList(currentMlList);
     }
 });
+
+// ========================================
+// ЭКСПОРТ
+// ========================================
+
+// Получить текущие фильтры поиска для экспорта
+function getCurrentSearchFilters() {
+    const filters = {};
+    const searchType = document.getElementById('searchType').value;
+    const status = document.getElementById('statusFilter').value;
+    
+    // Номер МЛ
+    if (searchType === 'ml') {
+        const mlNumber = document.getElementById('mlNumber').value.trim();
+        if (mlNumber) {
+            filters.номерМЛ = mlNumber;
+        }
+    }
+    
+    // Изделие
+    if (searchType === 'product' || searchType === 'dce') {
+        const productId = document.getElementById('productSelect').value;
+        if (productId) {
+            filters.изделиеId = parseInt(productId);
+        }
+    }
+    
+    // ДСЕ
+    if (searchType === 'dce') {
+        const dceId = document.getElementById('dceSelect').value;
+        if (dceId) {
+            filters.дсеId = parseInt(dceId);
+        }
+    }
+    
+    // Статус
+    if (status === 'open') {
+        filters.закрыт = false;
+    } else if (status === 'closed') {
+        filters.закрыт = true;
+    }
+    
+    return filters;
+}

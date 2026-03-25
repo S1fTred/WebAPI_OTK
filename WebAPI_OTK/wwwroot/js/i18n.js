@@ -275,7 +275,11 @@ const translations = {
         // Сообщения ДСЕ
         'message.errorLoadingDceList': 'Ошибка загрузки каталога ДСЕ',
         'message.errorLoadingDceDetails': 'Ошибка загрузки деталей',
-        'message.errorLoadingReferenceData': 'Ошибка загрузки справочных данных'
+        'message.errorLoadingReferenceData': 'Ошибка загрузки справочных данных',
+        
+        // Экспорт
+        'export.toExcel': 'Экспорт в Excel',
+        'export.toPDF': 'Экспорт в PDF'
     },
     
     en: {
@@ -550,7 +554,11 @@ const translations = {
         // DCE Messages
         'message.errorLoadingDceList': 'Error loading DCE catalog',
         'message.errorLoadingDceDetails': 'Error loading details',
-        'message.errorLoadingReferenceData': 'Error loading reference data'
+        'message.errorLoadingReferenceData': 'Error loading reference data',
+        
+        // Export
+        'export.toExcel': 'Export to Excel',
+        'export.toPDF': 'Export to PDF'
     }
 };
 

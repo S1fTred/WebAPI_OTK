@@ -75,6 +75,12 @@
                     </div>
                     <button type="submit" class="btn btn-primary" data-i18n="mlClosure.searchBtn">Найти</button>
                 </form>
+                
+                <!-- Кнопки экспорта -->
+                <div class="export-buttons" style="margin-top: 15px; display: flex; gap: 10px;">
+                    <button type="button" id="exportExcelBtn" class="btn btn-success" data-i18n="export.toExcel">Экспорт в Excel</button>
+                    <button type="button" id="exportPdfBtn" class="btn btn-danger" data-i18n="export.toPDF">Экспорт в PDF</button>
+                </div>
             </div>
 
             <!-- Список найденных МЛ -->
@@ -93,6 +99,9 @@
                 <div class="section-header">
                     <h3><span data-i18n="mlClosure.mlDetails">Маршрутный лист</span>: <span id="selectedMlNumber"></span></h3>
                     <div class="section-actions">
+                        <button id="exportMlPdfBtn" class="btn btn-danger" title="Экспорт МЛ с операциями в PDF">
+                            📄 <span data-i18n="export.toPDF">Экспорт в PDF</span>
+                        </button>
                         <button id="closeMlBtn" class="btn btn-success" disabled data-i18n="mlClosure.closeMlBtn">
                             Закрыть МЛ
                         </button>

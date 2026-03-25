@@ -325,3 +325,20 @@ document.addEventListener('languageChanged', () => {
     updatePaginationInfo();
     renderPagination();
 });
+
+// ========================================
+// ЭКСПОРТ
+// ========================================
+
+// Обработчики кнопок экспорта
+document.addEventListener('DOMContentLoaded', () => {
+    document.getElementById('exportExcelBtn')?.addEventListener('click', () => {
+        const изделиеId = currentFilters.изделиеID;
+        exportApi.exportDCEToExcel(изделиеId);
+    });
+    
+    document.getElementById('exportPdfBtn')?.addEventListener('click', () => {
+        const изделиеId = currentFilters.изделиеID;
+        exportApi.exportDCEToPDF(изделиеId);
+    });
+});
