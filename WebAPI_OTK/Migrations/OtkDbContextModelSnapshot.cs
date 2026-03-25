@@ -3,7 +3,6 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
-using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using WebAPI_OTK;
 
@@ -12,11 +11,9 @@ using WebAPI_OTK;
 namespace WebAPI_OTK.Migrations
 {
     [DbContext(typeof(OtkDbContext))]
-    [Migration("20260306092029_RemoveDateClosedFromML")]
-    partial class RemoveDateClosedFromML
+    partial class OtkDbContextModelSnapshot : ModelSnapshot
     {
-        /// <inheritdoc />
-        protected override void BuildTargetModel(ModelBuilder modelBuilder)
+        protected override void BuildModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

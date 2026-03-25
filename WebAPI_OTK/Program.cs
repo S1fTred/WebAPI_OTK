@@ -3,12 +3,9 @@ using WebAPI_OTK;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
-// Используем SQLite вместо SQL Server
-builder.Services.AddDbContext<Model1>(options =>
+builder.Services.AddDbContext<OtkDbContext>(options =>
     options.UseSqlite(builder.Configuration.GetConnectionString("DefaultConnection")));
 
-//builder.Services.AddControllers();
 builder.Services.AddControllers()
     .AddJsonOptions(options =>
     {
@@ -16,20 +13,17 @@ builder.Services.AddControllers()
             System.Text.Json.Serialization.ReferenceHandler.IgnoreCycles;
     });
 
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
     app.UseSwaggerUI();
 }
 
-// Включаем поддержку статических файлов (HTML, CSS, JS)
 app.UseDefaultFiles();
 app.UseStaticFiles();
 
@@ -37,12 +31,9 @@ app.UseHttpsRedirection();
 app.UseAuthorization();
 app.MapControllers();
 
-// Инициализация БД при первом запуске
 using (var scope = app.Services.CreateScope())
 {
-    var context = scope.ServiceProvider.GetRequiredService<Model1>();
-    
-    // Инициализация БД с тестовыми данными
+    var context = scope.ServiceProvider.GetRequiredService<OtkDbContext>();
     DatabaseSeeder.Seed(context);
 }
 

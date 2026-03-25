@@ -11,7 +11,7 @@ using WebAPI_OTK;
 
 namespace WebAPI_OTK.Migrations
 {
-    [DbContext(typeof(Model1))]
+    [DbContext(typeof(OtkDbContext))]
     [Migration("20251219115125_InitialCreate")]
     partial class InitialCreate
     {
