@@ -181,8 +181,10 @@ public class ExportController : ControllerBase
         worksheet.Cell(1, 3).Value = "ДСЕ";
         worksheet.Cell(1, 4).Value = "Дата создания";
         worksheet.Cell(1, 5).Value = "Статус";
+        worksheet.Cell(1, 6).Value = "Количество ОТК";
+        worksheet.Cell(1, 7).Value = "Количество брака";
 
-        var headerRange = worksheet.Range(1, 1, 1, 5);
+        var headerRange = worksheet.Range(1, 1, 1, 7);
         headerRange.Style.Font.Bold = true;
         headerRange.Style.Fill.BackgroundColor = XLColor.LightGray;
         headerRange.Style.Border.OutsideBorder = XLBorderStyleValues.Thin;
@@ -195,6 +197,8 @@ public class ExportController : ControllerBase
             worksheet.Cell(row, 3).Value = ml.ДСЕ?.Код ?? "";
             worksheet.Cell(row, 4).Value = ml.ДатаСоздания?.ToString("dd.MM.yyyy") ?? "";
             worksheet.Cell(row, 5).Value = ml.Закрыт == true ? "Закрыт" : "Открыт";
+            worksheet.Cell(row, 6).Value = ml.КоличествоОТК ?? 0;
+            worksheet.Cell(row, 7).Value = ml.КоличествоБрак ?? 0;
             row++;
         }
 
@@ -258,6 +262,8 @@ public class ExportController : ControllerBase
                             columns.RelativeColumn(2);
                             columns.RelativeColumn(2);
                             columns.RelativeColumn(1.5f);
+                            columns.RelativeColumn(1.5f);
+                            columns.RelativeColumn(1.5f);
                         });
 
                         table.Header(header =>
@@ -267,6 +273,8 @@ public class ExportController : ControllerBase
                             header.Cell().Element(CellStyle).Text("ДСЕ").Bold();
                             header.Cell().Element(CellStyle).Text("Дата").Bold();
                             header.Cell().Element(CellStyle).Text("Статус").Bold();
+                            header.Cell().Element(CellStyle).Text("Количество ОТК").Bold();
+                            header.Cell().Element(CellStyle).Text("Количество брака").Bold();
                         });
 
                         foreach (var ml in mlList)
@@ -276,6 +284,8 @@ public class ExportController : ControllerBase
                             table.Cell().Element(CellStyle).Text(ml.ДСЕ?.Код ?? "");
                             table.Cell().Element(CellStyle).Text(ml.ДатаСоздания?.ToString("dd.MM.yyyy") ?? "");
                             table.Cell().Element(CellStyle).Text(ml.Закрыт == true ? "Закрыт" : "Открыт");
+                            table.Cell().Element(CellStyle).Text((ml.КоличествоОТК ?? 0).ToString());
+                            table.Cell().Element(CellStyle).Text((ml.КоличествоБрак ?? 0).ToString());
                         }
                     });
 
@@ -615,21 +625,18 @@ public class ExportController : ControllerBase
                                 {
                                     row.RelativeItem().Text($"Статус: {(ml.Закрыт == true ? "Закрыт" : "Открыт")}");
                                 });
-                                if (ml.Закрыт == true)
+                                col.Item().Row(row =>
                                 {
-                                    col.Item().Row(row =>
-                                    {
-                                        row.RelativeItem().Text($"Сотрудник ОТК: {ml.Сотрудник?.ФИО ?? "-"}");
-                                    });
-                                    col.Item().Row(row =>
-                                    {
-                                        row.RelativeItem().Text($"Количество ОТК: {ml.КоличествоОТК ?? 0}");
-                                    });
-                                    col.Item().Row(row =>
-                                    {
-                                        row.RelativeItem().Text($"Количество брака: {ml.КоличествоБрак ?? 0}");
-                                    });
-                                }
+                                    row.RelativeItem().Text($"Сотрудник ОТК: {ml.Сотрудник?.ФИО ?? "-"}");
+                                });
+                                col.Item().Row(row =>
+                                {
+                                    row.RelativeItem().Text($"Количество ОТК: {ml.КоличествоОТК ?? 0}");
+                                });
+                                col.Item().Row(row =>
+                                {
+                                    row.RelativeItem().Text($"Количество брака: {ml.КоличествоБрак ?? 0}");
+                                });
                             });
                         });
 
