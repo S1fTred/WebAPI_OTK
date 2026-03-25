@@ -284,7 +284,7 @@ const translations = {
         'nav.mlClosure': 'Route List Closure',
         'nav.premKoef': 'Premium Coefficients',
         'nav.dceCatalog': 'DCE Catalog',
-        'nav.logout': 'Logout',
+        'nav.logout': 'Log Out',
         
         // Home Page
         'home.welcome': 'Welcome to the QC Accounting System',
