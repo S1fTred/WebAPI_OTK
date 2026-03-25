@@ -123,6 +123,16 @@ function initEventHandlers() {
     document.getElementById('backToListBtn').addEventListener('click', backToList);
     
     // Экспорт конкретного МЛ
+    document.getElementById('exportMlExcelBtn').addEventListener('click', () => {
+        if (currentMl && currentMl.id) {
+            console.log('Exporting ML detail to Excel:', currentMl.id);
+            exportApi.exportRouteListDetailToExcel(currentMl.id);
+        } else {
+            console.error('No ML selected');
+            showToast('Маршрутный лист не выбран', 'error');
+        }
+    });
+
     document.getElementById('exportMlPdfBtn').addEventListener('click', () => {
         if (currentMl && currentMl.id) {
             console.log('Exporting ML detail:', currentMl.id);

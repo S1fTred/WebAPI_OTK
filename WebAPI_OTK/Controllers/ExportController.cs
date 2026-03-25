@@ -1,4 +1,4 @@
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using ClosedXML.Excel;
 using QuestPDF.Fluent;
@@ -465,6 +465,98 @@ public class ExportController : ControllerBase
     }
 
     // Экспорт конкретного МЛ с операциями в PDF
+    [HttpGet("routelist/{id}/excel")]
+    public async Task<IActionResult> ExportRouteListDetailToExcel(int id)
+    {
+        var ml = await _context.МЛ
+            .Include(m => m.Изделие)
+            .Include(m => m.ДСЕ)
+            .Include(m => m.Сотрудник)
+            .FirstOrDefaultAsync(m => m.ID == id);
+
+        if (ml == null)
+        {
+            return NotFound();
+        }
+
+        var operations = await _context.Операция_МЛ
+            .Include(o => o.ТипОперации)
+            .Include(o => o.Сотрудник)
+            .Where(o => o.МЛID == id)
+            .OrderBy(o => o.ДатаИсполнения)
+            .ToListAsync();
+
+        using var workbook = new XLWorkbook();
+        var worksheet = workbook.Worksheets.Add("Маршрутный лист");
+
+        worksheet.Cell(1, 1).Value = $"Маршрутный лист № {ml.НомерМЛ}";
+        worksheet.Range(1, 1, 1, 5).Merge();
+        worksheet.Cell(1, 1).Style.Font.Bold = true;
+        worksheet.Cell(1, 1).Style.Font.FontSize = 16;
+
+        worksheet.Cell(3, 1).Value = "Дата создания";
+        worksheet.Cell(3, 2).Value = ml.ДатаСоздания?.ToString("dd.MM.yyyy") ?? "-";
+        worksheet.Cell(4, 1).Value = "Изделие";
+        worksheet.Cell(4, 2).Value = ml.Изделие?.Наименование ?? "-";
+        worksheet.Cell(5, 1).Value = "ДСЕ";
+        worksheet.Cell(5, 2).Value = ml.ДСЕ?.Код ?? "-";
+        worksheet.Cell(6, 1).Value = "Статус";
+        worksheet.Cell(6, 2).Value = ml.Закрыт == true ? "Закрыт" : "Открыт";
+        worksheet.Cell(7, 1).Value = "Сотрудник ОТК";
+        worksheet.Cell(7, 2).Value = ml.Сотрудник?.ФИО ?? "-";
+        worksheet.Cell(8, 1).Value = "Количество ОТК";
+        worksheet.Cell(8, 2).Value = ml.КоличествоОТК ?? 0;
+        worksheet.Cell(9, 1).Value = "Количество брака";
+        worksheet.Cell(9, 2).Value = ml.КоличествоБрак ?? 0;
+
+        var infoRange = worksheet.Range(3, 1, 9, 2);
+        infoRange.Style.Border.OutsideBorder = XLBorderStyleValues.Thin;
+        infoRange.Style.Border.InsideBorder = XLBorderStyleValues.Thin;
+        worksheet.Range(3, 1, 9, 1).Style.Font.Bold = true;
+
+        const int operationsHeaderRow = 11;
+        worksheet.Cell(operationsHeaderRow, 1).Value = "Тип операции";
+        worksheet.Cell(operationsHeaderRow, 2).Value = "Сотрудник";
+        worksheet.Cell(operationsHeaderRow, 3).Value = "Кол-во";
+        worksheet.Cell(operationsHeaderRow, 4).Value = "Дата исп.";
+        worksheet.Cell(operationsHeaderRow, 5).Value = "Дата закр.";
+
+        var headerRange = worksheet.Range(operationsHeaderRow, 1, operationsHeaderRow, 5);
+        headerRange.Style.Font.Bold = true;
+        headerRange.Style.Fill.BackgroundColor = XLColor.LightGray;
+        headerRange.Style.Border.OutsideBorder = XLBorderStyleValues.Thin;
+        headerRange.Style.Border.InsideBorder = XLBorderStyleValues.Thin;
+
+        var row = operationsHeaderRow + 1;
+        foreach (var op in operations)
+        {
+            worksheet.Cell(row, 1).Value = op.ТипОперации?.Наименование ?? "-";
+            worksheet.Cell(row, 2).Value = op.Сотрудник?.ФИО ?? "-";
+            worksheet.Cell(row, 3).Value = op.Количество ?? 0;
+            worksheet.Cell(row, 4).Value = op.ДатаИсполнения?.ToString("dd.MM.yyyy") ?? "-";
+            worksheet.Cell(row, 5).Value = op.ДатаЗакрытия?.ToString("dd.MM.yyyy") ?? "-";
+            row++;
+        }
+
+        if (operations.Any())
+        {
+            var operationsRange = worksheet.Range(operationsHeaderRow + 1, 1, row - 1, 5);
+            operationsRange.Style.Border.OutsideBorder = XLBorderStyleValues.Thin;
+            operationsRange.Style.Border.InsideBorder = XLBorderStyleValues.Thin;
+        }
+
+        worksheet.Columns().AdjustToContents();
+
+        using var stream = new MemoryStream();
+        workbook.SaveAs(stream);
+        stream.Position = 0;
+
+        return File(
+            stream.ToArray(),
+            "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+            $"ML_{ml.НомерМЛ}_{DateTime.Now:yyyyMMdd_HHmmss}.xlsx");
+    }
+
     [HttpGet("routelist/{id}/pdf")]
     public async Task<IActionResult> ExportRouteListDetailToPDF(int id)
     {
@@ -598,3 +690,4 @@ public class ExportController : ControllerBase
         return File(pdfBytes, "application/pdf", $"ML_{ml.НомерМЛ}_{DateTime.Now:yyyyMMdd_HHmmss}.pdf");
     }
 }
+

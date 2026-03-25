@@ -357,6 +357,10 @@ const exportApi = {
     },
     
     // Экспорт конкретного МЛ с операциями в PDF
+    exportRouteListDetailToExcel: (mlId) => {
+        window.open(`${API_BASE_URL}/Export/routelist/${mlId}/excel`, '_blank');
+    },
+
     exportRouteListDetailToPDF: (mlId) => {
         window.open(`${API_BASE_URL}/Export/routelist/${mlId}/pdf`, '_blank');
     },
