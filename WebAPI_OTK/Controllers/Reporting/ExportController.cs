@@ -479,6 +479,7 @@ public class ExportController : ControllerBase
     public async Task<IActionResult> ExportRouteListDetailToExcel(int id)
     {
         var ml = await _context.МЛ
+            .AsNoTracking()
             .Include(m => m.Изделие)
             .Include(m => m.ДСЕ)
             .Include(m => m.Сотрудник)
@@ -489,18 +490,13 @@ public class ExportController : ControllerBase
             return NotFound();
         }
 
-        var operations = await _context.Операция_МЛ
-            .Include(o => o.ТипОперации)
-            .Include(o => o.Сотрудник)
-            .Where(o => o.МЛID == id)
-            .OrderBy(o => o.ДатаИсполнения)
-            .ToListAsync();
+        var operationRows = await BuildRouteListOperationExportRowsAsync(ml);
 
         using var workbook = new XLWorkbook();
         var worksheet = workbook.Worksheets.Add("Маршрутный лист");
 
         worksheet.Cell(1, 1).Value = $"Маршрутный лист № {ml.НомерМЛ}";
-        worksheet.Range(1, 1, 1, 5).Merge();
+        worksheet.Range(1, 1, 1, 14).Merge();
         worksheet.Cell(1, 1).Style.Font.Bold = true;
         worksheet.Cell(1, 1).Style.Font.FontSize = 16;
 
@@ -528,33 +524,71 @@ public class ExportController : ControllerBase
         worksheet.Cell(operationsHeaderRow, 1).Value = "Тип операции";
         worksheet.Cell(operationsHeaderRow, 2).Value = "Сотрудник";
         worksheet.Cell(operationsHeaderRow, 3).Value = "Кол-во";
-        worksheet.Cell(operationsHeaderRow, 4).Value = "Дата исп.";
-        worksheet.Cell(operationsHeaderRow, 5).Value = "Дата закр.";
+        worksheet.Cell(operationsHeaderRow, 4).Value = "Норма, ч";
+        worksheet.Cell(operationsHeaderRow, 5).Value = "Тариф";
+        worksheet.Cell(operationsHeaderRow, 6).Value = "Цена, ₽/ч";
+        worksheet.Cell(operationsHeaderRow, 7).Value = "Дата исп.";
+        worksheet.Cell(operationsHeaderRow, 8).Value = "Дата закр.";
+        worksheet.Cell(operationsHeaderRow, 9).Value = "Базовая сумма, ₽";
+        worksheet.Cell(operationsHeaderRow, 10).Value = "Коэф. сделки";
+        worksheet.Cell(operationsHeaderRow, 11).Value = "Надбавка, ₽";
+        worksheet.Cell(operationsHeaderRow, 12).Value = "Коэф. премии";
+        worksheet.Cell(operationsHeaderRow, 13).Value = "Премия, ₽";
+        worksheet.Cell(operationsHeaderRow, 14).Value = "Итого, ₽";
 
-        var headerRange = worksheet.Range(operationsHeaderRow, 1, operationsHeaderRow, 5);
+        var headerRange = worksheet.Range(operationsHeaderRow, 1, operationsHeaderRow, 14);
         headerRange.Style.Font.Bold = true;
         headerRange.Style.Fill.BackgroundColor = XLColor.LightGray;
         headerRange.Style.Border.OutsideBorder = XLBorderStyleValues.Thin;
         headerRange.Style.Border.InsideBorder = XLBorderStyleValues.Thin;
 
         var row = operationsHeaderRow + 1;
-        foreach (var op in operations)
+        foreach (var op in operationRows)
         {
-            worksheet.Cell(row, 1).Value = op.ТипОперации?.Наименование ?? "-";
-            worksheet.Cell(row, 2).Value = op.Сотрудник?.ФИО ?? "-";
-            worksheet.Cell(row, 3).Value = op.Количество ?? 0;
-            worksheet.Cell(row, 4).Value = op.ДатаИсполнения?.ToString("dd.MM.yyyy") ?? "-";
-            worksheet.Cell(row, 5).Value = op.ДатаЗакрытия?.ToString("dd.MM.yyyy") ?? "-";
+            worksheet.Cell(row, 1).Value = op.OperationType;
+            worksheet.Cell(row, 2).Value = op.Employee;
+            worksheet.Cell(row, 3).Value = op.Quantity;
+            worksheet.Cell(row, 4).Value = op.TimeStandardHours;
+            worksheet.Cell(row, 5).Value = op.Tariff;
+            worksheet.Cell(row, 6).Value = op.PricePerHour;
+            worksheet.Cell(row, 7).Value = op.ExecutionDate?.ToString("dd.MM.yyyy HH:mm") ?? "-";
+            worksheet.Cell(row, 8).Value = op.ClosureDate?.ToString("dd.MM.yyyy HH:mm") ?? "-";
+            worksheet.Cell(row, 9).Value = op.BaseAmount;
+            worksheet.Cell(row, 10).Value = op.DealCoefficient;
+            worksheet.Cell(row, 11).Value = op.SurchargeAmount;
+            worksheet.Cell(row, 12).Value = op.PremiumCoefficient;
+            worksheet.Cell(row, 13).Value = op.PremiumAmount;
+            worksheet.Cell(row, 14).Value = op.TotalAmount;
             row++;
         }
 
-        if (operations.Any())
+        if (operationRows.Any())
         {
-            var operationsRange = worksheet.Range(operationsHeaderRow + 1, 1, row - 1, 5);
+            var totalsRow = row;
+            worksheet.Cell(totalsRow, 1).Value = "Итого";
+            worksheet.Cell(totalsRow, 3).Value = operationRows.Sum(x => x.Quantity);
+            worksheet.Cell(totalsRow, 9).Value = operationRows.Sum(x => x.BaseAmount);
+            worksheet.Cell(totalsRow, 11).Value = operationRows.Sum(x => x.SurchargeAmount);
+            worksheet.Cell(totalsRow, 13).Value = operationRows.Sum(x => x.PremiumAmount);
+            worksheet.Cell(totalsRow, 14).Value = operationRows.Sum(x => x.TotalAmount);
+
+            var operationsRange = worksheet.Range(operationsHeaderRow + 1, 1, totalsRow, 14);
             operationsRange.Style.Border.OutsideBorder = XLBorderStyleValues.Thin;
             operationsRange.Style.Border.InsideBorder = XLBorderStyleValues.Thin;
+
+            var totalsRange = worksheet.Range(totalsRow, 1, totalsRow, 14);
+            totalsRange.Style.Font.Bold = true;
+            totalsRange.Style.Fill.BackgroundColor = XLColor.LightGray;
         }
 
+        worksheet.Column(4).Style.NumberFormat.Format = "0.00";
+        worksheet.Column(6).Style.NumberFormat.Format = "#,##0.00";
+        worksheet.Column(9).Style.NumberFormat.Format = "#,##0.00";
+        worksheet.Column(10).Style.NumberFormat.Format = "0.00";
+        worksheet.Column(11).Style.NumberFormat.Format = "#,##0.00";
+        worksheet.Column(12).Style.NumberFormat.Format = "0.00";
+        worksheet.Column(13).Style.NumberFormat.Format = "#,##0.00";
+        worksheet.Column(14).Style.NumberFormat.Format = "#,##0.00";
         worksheet.Columns().AdjustToContents();
 
         using var stream = new MemoryStream();
@@ -571,6 +605,7 @@ public class ExportController : ControllerBase
     public async Task<IActionResult> ExportRouteListDetailToPDF(int id)
     {
         var ml = await _context.МЛ
+            .AsNoTracking()
             .Include(m => m.Изделие)
             .Include(m => m.ДСЕ)
             .Include(m => m.Сотрудник)
@@ -581,20 +616,15 @@ public class ExportController : ControllerBase
             return NotFound();
         }
 
-        var operations = await _context.Операция_МЛ
-            .Include(o => o.ТипОперации)
-            .Include(o => o.Сотрудник)
-            .Where(o => o.МЛID == id)
-            .OrderBy(o => o.ДатаИсполнения)
-            .ToListAsync();
+        var operationRows = await BuildRouteListOperationExportRowsAsync(ml);
 
         var document = Document.Create(container =>
         {
             container.Page(page =>
             {
-                page.Size(PageSizes.A4);
-                page.Margin(2, Unit.Centimetre);
-                page.DefaultTextStyle(x => x.FontSize(10));
+                page.Size(PageSizes.A4.Landscape());
+                page.Margin(1.2f, Unit.Centimetre);
+                page.DefaultTextStyle(x => x.FontSize(8));
 
                 page.Header()
                     .Column(column =>
@@ -641,38 +671,78 @@ public class ExportController : ControllerBase
                         });
 
                         // Операции
-                        column.Item().PaddingTop(15).Text("Операции").FontSize(14).Bold();
+                        column.Item().PaddingTop(15).Text("Операции и расчёт").FontSize(13).Bold();
                         
-                        if (operations.Any())
+                        if (operationRows.Any())
                         {
                             column.Item().PaddingTop(10).Table(table =>
                             {
                                 table.ColumnsDefinition(columns =>
                                 {
                                     columns.RelativeColumn(3);
-                                    columns.RelativeColumn(2);
+                                    columns.RelativeColumn(2.4f);
                                     columns.RelativeColumn(1);
-                                    columns.RelativeColumn(1.5f);
-                                    columns.RelativeColumn(1.5f);
+                                    columns.RelativeColumn(1.1f);
+                                    columns.RelativeColumn(1.1f);
+                                    columns.RelativeColumn(1.3f);
+                                    columns.RelativeColumn(1.6f);
+                                    columns.RelativeColumn(1.6f);
+                                    columns.RelativeColumn(1.4f);
+                                    columns.RelativeColumn(1.1f);
+                                    columns.RelativeColumn(1.4f);
+                                    columns.RelativeColumn(1.1f);
+                                    columns.RelativeColumn(1.4f);
+                                    columns.RelativeColumn(1.4f);
                                 });
 
                                 table.Header(header =>
                                 {
-                                    header.Cell().Element(CellStyle).Text("Тип операции").Bold();
-                                    header.Cell().Element(CellStyle).Text("Сотрудник").Bold();
-                                    header.Cell().Element(CellStyle).Text("Кол-во").Bold();
-                                    header.Cell().Element(CellStyle).Text("Дата исп.").Bold();
-                                    header.Cell().Element(CellStyle).Text("Дата закр.").Bold();
+                                    header.Cell().Element(CompactCellStyle).Text("Тип операции").Bold();
+                                    header.Cell().Element(CompactCellStyle).Text("Сотрудник").Bold();
+                                    header.Cell().Element(CompactCellStyle).Text("Кол-во").Bold();
+                                    header.Cell().Element(CompactCellStyle).Text("Норма, ч").Bold();
+                                    header.Cell().Element(CompactCellStyle).Text("Тариф").Bold();
+                                    header.Cell().Element(CompactCellStyle).Text("Цена, ₽/ч").Bold();
+                                    header.Cell().Element(CompactCellStyle).Text("Дата исп.").Bold();
+                                    header.Cell().Element(CompactCellStyle).Text("Дата закр.").Bold();
+                                    header.Cell().Element(CompactCellStyle).Text("База, ₽").Bold();
+                                    header.Cell().Element(CompactCellStyle).Text("Ксд").Bold();
+                                    header.Cell().Element(CompactCellStyle).Text("Надб., ₽").Bold();
+                                    header.Cell().Element(CompactCellStyle).Text("Кпрем").Bold();
+                                    header.Cell().Element(CompactCellStyle).Text("Прем., ₽").Bold();
+                                    header.Cell().Element(CompactCellStyle).Text("Итого, ₽").Bold();
                                 });
 
-                                foreach (var op in operations)
+                                foreach (var op in operationRows)
                                 {
-                                    table.Cell().Element(CellStyle).Text(op.ТипОперации?.Наименование ?? "-");
-                                    table.Cell().Element(CellStyle).Text(op.Сотрудник?.ФИО ?? "-");
-                                    table.Cell().Element(CellStyle).Text((op.Количество ?? 0).ToString());
-                                    table.Cell().Element(CellStyle).Text(op.ДатаИсполнения?.ToString("dd.MM.yyyy") ?? "-");
-                                    table.Cell().Element(CellStyle).Text(op.ДатаЗакрытия?.ToString("dd.MM.yyyy") ?? "-");
+                                    table.Cell().Element(CompactCellStyle).Text(op.OperationType);
+                                    table.Cell().Element(CompactCellStyle).Text(op.Employee);
+                                    table.Cell().Element(CompactCellStyle).Text(op.Quantity.ToString());
+                                    table.Cell().Element(CompactCellStyle).Text(op.TimeStandardHours.ToString("0.00"));
+                                    table.Cell().Element(CompactCellStyle).Text(op.Tariff);
+                                    table.Cell().Element(CompactCellStyle).Text(op.PricePerHour.ToString("#,##0.00"));
+                                    table.Cell().Element(CompactCellStyle).Text(op.ExecutionDate?.ToString("dd.MM.yyyy") ?? "-");
+                                    table.Cell().Element(CompactCellStyle).Text(op.ClosureDate?.ToString("dd.MM.yyyy") ?? "-");
+                                    table.Cell().Element(CompactCellStyle).Text(op.BaseAmount.ToString("#,##0.00"));
+                                    table.Cell().Element(CompactCellStyle).Text(op.DealCoefficient.ToString("0.00"));
+                                    table.Cell().Element(CompactCellStyle).Text(op.SurchargeAmount.ToString("#,##0.00"));
+                                    table.Cell().Element(CompactCellStyle).Text(op.PremiumCoefficient.ToString("0.00"));
+                                    table.Cell().Element(CompactCellStyle).Text(op.PremiumAmount.ToString("#,##0.00"));
+                                    table.Cell().Element(CompactCellStyle).Text(op.TotalAmount.ToString("#,##0.00"));
                                 }
+                            });
+
+                            column.Item().PaddingTop(10).Element(container =>
+                            {
+                                container.Border(1).BorderColor(Colors.Grey.Lighten1).Padding(6).Row(row =>
+                                {
+                                    row.RelativeItem().Text($"Операций: {operationRows.Count}");
+                                    row.RelativeItem().Text($"Кол-во: {operationRows.Sum(x => x.Quantity)}");
+                                    row.RelativeItem().Text($"База: {operationRows.Sum(x => x.BaseAmount):#,##0.00} ₽");
+                                    row.RelativeItem().Text($"Надбавка: {operationRows.Sum(x => x.SurchargeAmount):#,##0.00} ₽");
+                                    row.RelativeItem().Text($"Премия: {operationRows.Sum(x => x.PremiumAmount):#,##0.00} ₽");
+                                    row.RelativeItem().AlignRight().Text($"Итого: {operationRows.Sum(x => x.TotalAmount):#,##0.00} ₽").Bold();
+                                });
                             });
                         }
                         else
@@ -695,6 +765,112 @@ public class ExportController : ControllerBase
 
         var pdfBytes = document.GeneratePdf();
         return File(pdfBytes, "application/pdf", $"ML_{ml.НомерМЛ}_{DateTime.Now:yyyyMMdd_HHmmss}.pdf");
+    }
+
+    private async Task<List<RouteListOperationExportRow>> BuildRouteListOperationExportRowsAsync(МЛ ml)
+    {
+        var operations = await _context.Операция_МЛ
+            .AsNoTracking()
+            .Include(o => o.ТипОперации)
+            .Include(o => o.Сотрудник)
+            .Where(o => o.МЛID == ml.ID)
+            .OrderBy(o => o.ДатаИсполнения)
+            .ToListAsync();
+
+        var coefficients = await _context.ПремиальныеКоэффициенты
+            .AsNoTracking()
+            .Where(k => k.ИзделиеID == ml.ИзделиеID && k.ДСЕID == ml.ДСЕID)
+            .ToListAsync();
+
+        var result = new List<RouteListOperationExportRow>(operations.Count);
+
+        foreach (var op in operations)
+        {
+            var quantity = op.Количество ?? 0;
+            var timeStandardHours = op.НормаВремениЧас ?? 0m;
+            var pricePerHour = op.ЦенаЗаЧас ?? 0m;
+            var baseAmount = quantity * timeStandardHours * pricePerHour;
+            var calculationMoment = op.ДатаЗакрытия ?? DateTime.Now;
+            var dealCoefficient = coefficients
+                .Where(k => k.ТипОперацииID == op.ТипОперацииID)
+                .Where(k => k.ДатаНачала <= calculationMoment && (k.ДатаОкончания == null || k.ДатаОкончания >= calculationMoment))
+                .Select(k => (decimal?)k.Коэффициент)
+                .FirstOrDefault() ?? 1.0m;
+
+            var surchargeAmount = (dealCoefficient - 1m) * baseAmount;
+            var premiumCoefficient = !(op.ДатаЗакрытия.HasValue && op.ДатаИсполнения.HasValue && op.ДатаЗакрытия > op.ДатаИсполнения)
+                ? 0.8m
+                : 0m;
+            var premiumAmount = premiumCoefficient * (baseAmount + surchargeAmount);
+            var totalAmount = baseAmount + surchargeAmount + premiumAmount;
+
+            result.Add(new RouteListOperationExportRow
+            {
+                OperationType = op.ТипОперации?.Наименование ?? "-",
+                Employee = FormatEmployeeDisplay(op.Сотрудник),
+                Quantity = quantity,
+                TimeStandardHours = timeStandardHours,
+                Tariff = string.IsNullOrWhiteSpace(op.НазваниеТарифа) ? "-" : op.НазваниеТарифа,
+                PricePerHour = pricePerHour,
+                ExecutionDate = op.ДатаИсполнения,
+                ClosureDate = op.ДатаЗакрытия,
+                BaseAmount = baseAmount,
+                DealCoefficient = dealCoefficient,
+                SurchargeAmount = surchargeAmount,
+                PremiumCoefficient = premiumCoefficient,
+                PremiumAmount = premiumAmount,
+                TotalAmount = totalAmount
+            });
+        }
+
+        return result;
+    }
+
+    private static string FormatEmployeeDisplay(Сотрудник? employee)
+    {
+        if (employee == null)
+        {
+            return "-";
+        }
+
+        if (string.IsNullOrWhiteSpace(employee.ТабельныйНомер))
+        {
+            return employee.ФИО ?? "-";
+        }
+
+        if (string.IsNullOrWhiteSpace(employee.ФИО))
+        {
+            return employee.ТабельныйНомер;
+        }
+
+        return $"{employee.ТабельныйНомер} {employee.ФИО}";
+    }
+
+    private sealed class RouteListOperationExportRow
+    {
+        public string OperationType { get; init; } = "-";
+        public string Employee { get; init; } = "-";
+        public int Quantity { get; init; }
+        public decimal TimeStandardHours { get; init; }
+        public string Tariff { get; init; } = "-";
+        public decimal PricePerHour { get; init; }
+        public DateTime? ExecutionDate { get; init; }
+        public DateTime? ClosureDate { get; init; }
+        public decimal BaseAmount { get; init; }
+        public decimal DealCoefficient { get; init; }
+        public decimal SurchargeAmount { get; init; }
+        public decimal PremiumCoefficient { get; init; }
+        public decimal PremiumAmount { get; init; }
+        public decimal TotalAmount { get; init; }
+    }
+
+    private static IContainer CompactCellStyle(IContainer container)
+    {
+        return container
+            .Border(1)
+            .BorderColor(Colors.Grey.Lighten2)
+            .PaddingVertical(3)
+            .PaddingHorizontal(2);
     }
 }
 
